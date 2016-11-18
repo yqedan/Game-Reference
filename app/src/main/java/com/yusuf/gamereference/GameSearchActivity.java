@@ -32,7 +32,7 @@ public class GameSearchActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String search = intent.getStringExtra("search");
         Log.d(TAG,search);
-        mTextView.setText("You searched for \"" + search + "\" Here is a hard coded list if the user searched \"Zelda\"" );
+        mTextView.setText("You searched for \"" + search + "\"\n Here is a hard coded list if the user searched \"Zelda\"" );
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mGames);
         mListView.setAdapter(adapter);
     }

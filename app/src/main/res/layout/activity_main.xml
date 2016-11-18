@@ -16,7 +16,9 @@
         android:id="@+id/button"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:text="Submit"/>
+        android:text="Submit"
+        android:textColor="@color/primary_text"
+        android:background="@color/colorAccent"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -27,7 +29,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
         android:textSize="30sp"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:textColor="@color/primary_text"/>
 
     <EditText
         android:layout_width="wrap_content"
