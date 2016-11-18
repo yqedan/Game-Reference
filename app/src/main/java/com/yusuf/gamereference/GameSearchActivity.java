@@ -44,6 +44,8 @@ public class GameSearchActivity extends AppCompatActivity implements AdapterView
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         String game = ((TextView)view).getText().toString();
-        Toast.makeText(GameSearchActivity.this, game, Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(GameSearchActivity.this, GameDetailActivity.class);
+        intent.putExtra("game",game);
+        startActivity(intent);
     }
 }
