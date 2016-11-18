@@ -4,14 +4,17 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class GameSearchActivity extends AppCompatActivity {
+public class GameSearchActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     public static final String TAG = GameSearchActivity.class.getSimpleName();
     @Bind(R.id.listView) ListView mListView;
     @Bind(R.id.textView) TextView mTextView;
@@ -35,5 +38,12 @@ public class GameSearchActivity extends AppCompatActivity {
         mTextView.setText("You searched for \"" + search + "\"\n Here is a hard coded list if the user searched \"Zelda\"" );
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mGames);
         mListView.setAdapter(adapter);
+        mListView.setOnItemClickListener(this);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        String game = ((TextView)view).getText().toString();
+        Toast.makeText(GameSearchActivity.this, game, Toast.LENGTH_LONG).show();
     }
 }
