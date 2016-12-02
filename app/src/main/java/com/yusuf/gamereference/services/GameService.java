@@ -40,13 +40,14 @@ public class GameService {
                 for (int i = 0; i <resultsJSON.length() ; i++) {
                     JSONObject game = resultsJSON.getJSONObject(i);
                     String title = game.getString("name");
+                    Integer id = game.getInt("id");
                     String imageUrl = game.getJSONObject("image").getString("super_url");
                     JSONArray platformsJSON = game.getJSONArray("platforms");
                     ArrayList<String> platforms = new ArrayList<>();
                     for (int j = 0; j < platformsJSON.length(); j++) {
                         platforms.add(platformsJSON.getJSONObject(j).getString("abbreviation"));
                     }
-                    games.add(new Game(title, imageUrl, platforms));
+                    games.add(new Game(title, imageUrl, platforms, id));
                 }
             }
         }catch (JSONException |IOException e){

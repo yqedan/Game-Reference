@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yusuf.gamereference.R;
 
@@ -19,8 +18,7 @@ public class GameDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_detail);
         ButterKnife.bind(this);
         Intent intent = getIntent();
-        String game = intent.getStringExtra("game");
-        Toast.makeText(GameDetailActivity.this, game, Toast.LENGTH_LONG).show();
-        mTextView.setText(game);
+        String gameId = intent.getStringExtra("id");
+        mTextView.setText(gameId);
     }
 }

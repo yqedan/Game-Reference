@@ -6,11 +6,13 @@ public class Game {
     private String mTitle;
     private String mImageUrl;
     private ArrayList<String> mPlatforms;
+    private Integer mId;
 
-    public Game(String title, String imageUrl, ArrayList<String> platforms){
+    public Game(String title, String imageUrl, ArrayList<String> platforms, Integer id){
         this.mTitle = title;
         this.mImageUrl = imageUrl;
         this.mPlatforms = platforms;
+        this.mId = id;
     }
 
     public String getTitle() {
@@ -25,4 +27,7 @@ public class Game {
         return mPlatforms;
     }
 
+    public Integer getId() {
+        return mId;
+    }
 }
