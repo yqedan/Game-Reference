@@ -41,8 +41,12 @@ public class GameService {
                     JSONObject game = resultsJSON.getJSONObject(i);
                     String title = game.getString("name");
                     String imageUrl = game.getJSONObject("image").getString("super_url");
-                    String platform = game.getJSONArray("platforms").getJSONObject(0).getString("name");
-                    games.add(new Game(title, imageUrl, platform));
+                    JSONArray platformsJSON = game.getJSONArray("platforms");
+                    ArrayList<String> platforms = new ArrayList<>();
+                    for (int j = 0; j < platformsJSON.length(); j++) {
+                        platforms.add(platformsJSON.getJSONObject(j).getString("abbreviation"));
+                    }
+                    games.add(new Game(title, imageUrl, platforms));
                 }
             }
         }catch (JSONException |IOException e){

@@ -70,7 +70,12 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GameVi
         public void bindGame(Game game){
             Picasso.with(mContext).load(game.getImageUrl()).resize(200,200).centerInside().into(mGameTitleImageView);
             mGameTitleTextView.setText(game.getTitle());
-            mGamePlatformTextView.setText(game.getPlatform());
+            ArrayList<String> platforms = game.getPlatforms();
+            String platform = "";
+            for (int i = 0; i < platforms.size() ; i++) {
+                platform += (platforms.get(i) + " ");
+            }
+            mGamePlatformTextView.setText("Platforms: " + platform);
         }
     }
 

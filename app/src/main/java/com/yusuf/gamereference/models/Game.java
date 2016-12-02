@@ -1,14 +1,16 @@
 package com.yusuf.gamereference.models;
 
+import java.util.ArrayList;
+
 public class Game {
     private String mTitle;
     private String mImageUrl;
-    private String mPlatform;
+    private ArrayList<String> mPlatforms;
 
-    public Game(String title, String imageUrl, String platform){
+    public Game(String title, String imageUrl, ArrayList<String> platforms){
         this.mTitle = title;
         this.mImageUrl = imageUrl;
-        this.mPlatform = platform;
+        this.mPlatforms = platforms;
     }
 
     public String getTitle() {
@@ -19,8 +21,8 @@ public class Game {
         return mImageUrl;
     }
 
-    public String getPlatform() {
-        return mPlatform;
+    public ArrayList<String> getPlatforms() {
+        return mPlatforms;
     }
 
 }

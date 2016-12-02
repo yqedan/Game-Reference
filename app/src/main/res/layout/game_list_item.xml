@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingTop="5px"
+    android:paddingBottom="5px">
 
     <ImageView
         android:layout_width="100dp"
@@ -22,7 +24,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:text="GameCube"
+            android:text="Platform: Wii"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
