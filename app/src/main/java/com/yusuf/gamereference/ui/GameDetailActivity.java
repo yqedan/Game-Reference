@@ -1,6 +1,7 @@
 package com.yusuf.gamereference.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,7 +24,8 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class GameDetailActivity extends AppCompatActivity implements View.OnClickListener{
-    @Bind(R.id.textView) TextView mTextView;
+    @Bind(R.id.textViewTitle) TextView mTextViewTitle;
+    @Bind(R.id.textViewLink) TextView mTextViewLink;
     public static final String TAG = GameDetailActivity.class.getSimpleName();
     GameDetail mGame;
     @Override
@@ -34,6 +36,7 @@ public class GameDetailActivity extends AppCompatActivity implements View.OnClic
         Intent intent = getIntent();
         String gameId = intent.getStringExtra("id");
         getGameDetails(gameId);
+        mTextViewLink.setOnClickListener(this);
     }
 
     private void getGameDetails(String id){
@@ -46,14 +49,21 @@ public class GameDetailActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 mGame = GameService.processGame(response);
-                Log.d(TAG,mGame.getTitle());
-                Log.d(TAG,mGame.getUrl());
+                GameDetailActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTextViewTitle.setText(mGame.getTitle());
+                    }
+                });
             }
         });
     }
 
     @Override
     public void onClick(View v) {
-
+        //Log.d(TAG,mGame.getUrl());
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse(mGame.getUrl()));
+        startActivity(webIntent);
     }
 }
