@@ -1,4 +1,4 @@
-package com.yusuf.gamereference;
+package com.yusuf.gamereference.ui;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -9,10 +9,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.yusuf.gamereference.R;
+import com.yusuf.gamereference.services.GameService;
+
+import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class GameSearchActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     public static final String TAG = GameSearchActivity.class.getSimpleName();
@@ -39,6 +46,7 @@ public class GameSearchActivity extends AppCompatActivity implements AdapterView
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mGames);
         mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(this);
+        getGames(search);
     }
 
     @Override
@@ -47,5 +55,20 @@ public class GameSearchActivity extends AppCompatActivity implements AdapterView
         Intent intent = new Intent(GameSearchActivity.this, GameDetailActivity.class);
         intent.putExtra("game",game);
         startActivity(intent);
+    }
+
+    private void getGames(String title){
+        GameService.findGames(title, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String jsonData = response.body().string();
+                Log.d(TAG,jsonData);
+            }
+        });
     }
 }
