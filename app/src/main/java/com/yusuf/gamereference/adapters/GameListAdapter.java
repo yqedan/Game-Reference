@@ -1,6 +1,7 @@
 package com.yusuf.gamereference.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.yusuf.gamereference.models.Game;
 import com.yusuf.gamereference.R;
+import com.yusuf.gamereference.ui.GameDetailActivity;
 
 import java.util.ArrayList;
 
@@ -41,7 +43,7 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GameVi
         return mGames.size();
     }
 
-    public class GameViewHolder extends RecyclerView.ViewHolder{
+    public class GameViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         @Bind(R.id.gameTitle) TextView mGameTitleTextView;
 
         private Context mContext;
@@ -50,6 +52,15 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GameVi
             super(itemView);
             ButterKnife.bind(this, itemView);
             mContext = itemView.getContext();
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view){
+            //int itemPosition = getLayoutPosition();
+            Intent intent = new Intent(mContext, GameDetailActivity.class);
+            //intent.putExtra("game",game);
+            mContext.startActivity(intent);
         }
 
         public void bindGame(Game game){

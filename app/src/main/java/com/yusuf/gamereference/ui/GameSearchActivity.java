@@ -46,14 +46,6 @@ public class GameSearchActivity extends AppCompatActivity { //implements Adapter
         getGames(search);
     }
 
-//    @Override
-//    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//        String game = ((TextView)view).getText().toString();
-//        Intent intent = new Intent(GameSearchActivity.this, GameDetailActivity.class);
-//        intent.putExtra("game",game);
-//        startActivity(intent);
-//    }
-
     private void getGames(String title){
         GameService.findGames(title, new Callback() {
             @Override
