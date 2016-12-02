@@ -20,16 +20,30 @@ import okhttp3.Response;
 public class GameService {
     public static void findGames(String title, Callback callback){
         OkHttpClient client = new OkHttpClient.Builder().build();
-        HttpUrl.Builder urlBuildier = HttpUrl.parse(Constants.GIANT_BOMB_SEARCH_BASE_URL).newBuilder();
-        urlBuildier.addQueryParameter(Constants.API_KEY_QUERY_PARAMETER,Constants.API_KEY)
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(Constants.GIANT_BOMB_SEARCH_BASE_URL).newBuilder();
+        urlBuilder.addQueryParameter(Constants.API_KEY_QUERY_PARAMETER,Constants.API_KEY)
                    .addQueryParameter(Constants.SEARCH_QUERY_PARAMETER,title);
-        String url = urlBuildier.build().toString();
+        String url = urlBuilder.build().toString();
 
         Request request = new Request.Builder().url(url).build();
 
         Call call = client.newCall(request);
         call.enqueue(callback);
     }
+
+    public static void findGameDetails(String id, Callback callback){
+        OkHttpClient client = new OkHttpClient.Builder().build();
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(Constants.GIANT_BOMB_GAME_DETAILS_BASE_URL).newBuilder();
+        urlBuilder.addPathSegment(id);
+        urlBuilder.addQueryParameter(Constants.API_KEY_QUERY_PARAMETER,Constants.API_KEY);
+        String url = urlBuilder.build().toString();
+
+        Request request = new Request.Builder().url(url).build();
+
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+    }
+
     public static ArrayList<Game> processSearch(Response response){
         ArrayList <Game> games = new ArrayList<>();
         try{
