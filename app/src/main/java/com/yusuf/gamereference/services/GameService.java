@@ -40,7 +40,8 @@ public class GameService {
                 for (int i = 0; i <resultsJSON.length() ; i++) {
                     JSONObject game = resultsJSON.getJSONObject(i);
                     String title = game.getString("name");
-                    games.add(new Game(title));
+                    String imageUrl = game.getJSONObject("image").getString("super_url");
+                    games.add(new Game(title,imageUrl));
                 }
             }
         }catch (JSONException |IOException e){

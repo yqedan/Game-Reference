@@ -42,7 +42,6 @@ public class GameSearchActivity extends AppCompatActivity { //implements Adapter
         ButterKnife.bind(this);
         String search = getIntent().getStringExtra("search");
         mTextView.setText("You searched for " + search);
-        //mListView.setOnItemClickListener(this);
         getGames(search);
     }
 

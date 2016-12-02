@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="140dp"
+            android:id="@+id/gameTitleImageView"
+            android:src="@drawable/gameimage"
+            >
 
-    <TextView
-        android:text="The Legend Of Zelda"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:id="@+id/gameTitle"
-        android:textSize="20sp" />
-
+        </ImageView>
+        <TextView
+            android:text="The Legend Of Zelda"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:id="@+id/gameTitle"
+            android:textSize="20sp" />
 </LinearLayout>

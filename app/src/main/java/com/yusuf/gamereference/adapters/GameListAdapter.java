@@ -6,8 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.yusuf.gamereference.models.Game;
 import com.yusuf.gamereference.R;
 import com.yusuf.gamereference.ui.GameDetailActivity;
@@ -45,6 +47,7 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GameVi
 
     public class GameViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         @Bind(R.id.gameTitle) TextView mGameTitleTextView;
+        @Bind(R.id.gameTitleImageView) ImageView mGameTitleImageView;
 
         private Context mContext;
 
@@ -57,13 +60,14 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GameVi
 
         @Override
         public void onClick(View view){
-            //int itemPosition = getLayoutPosition();
+            int itemPosition = getLayoutPosition();
             Intent intent = new Intent(mContext, GameDetailActivity.class);
-            //intent.putExtra("game",game);
+            intent.putExtra("game",mGames.get(itemPosition).getTitle());
             mContext.startActivity(intent);
         }
 
         public void bindGame(Game game){
+            Picasso.with(mContext).load(game.getImageUrl()).into(mGameTitleImageView);
             mGameTitleTextView.setText(game.getTitle());
         }
     }
