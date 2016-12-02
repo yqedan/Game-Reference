@@ -11,7 +11,7 @@
     tools:context="com.yusuf.gamereference.ui.GameDetailActivity">
 
     <TextView
-        android:text="TextView"
+        android:text="Giant Bomb page!"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"

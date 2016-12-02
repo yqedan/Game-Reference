@@ -2,6 +2,7 @@ package com.yusuf.gamereference.services;
 
 import com.yusuf.gamereference.Constants;
 import com.yusuf.gamereference.models.Game;
+import com.yusuf.gamereference.models.GameDetail;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,5 +69,22 @@ public class GameService {
             e.printStackTrace();
         }
         return games;
+    }
+
+    public static GameDetail processGame(Response response){
+        GameDetail game = null;
+        try{
+            String jsonData = response.body().string();
+            if (response.isSuccessful()) {
+                JSONObject gameJSON = new JSONObject(jsonData);
+                JSONObject resultJSON = gameJSON.getJSONObject("results");
+                String title = resultJSON.getString("name");
+                String url = resultJSON.getString("site_detail_url");
+                game = new GameDetail(title,url);
+            }
+        }catch (JSONException |IOException e){
+            e.printStackTrace();
+        }
+        return game;
     }
 }

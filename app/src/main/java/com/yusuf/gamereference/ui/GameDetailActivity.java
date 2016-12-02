@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.yusuf.gamereference.R;
 import com.yusuf.gamereference.adapters.GameListAdapter;
+import com.yusuf.gamereference.models.GameDetail;
 import com.yusuf.gamereference.services.GameService;
 
 import java.io.IOException;
@@ -20,9 +22,10 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class GameDetailActivity extends AppCompatActivity {
+public class GameDetailActivity extends AppCompatActivity implements View.OnClickListener{
     @Bind(R.id.textView) TextView mTextView;
     public static final String TAG = GameDetailActivity.class.getSimpleName();
+    GameDetail mGame;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +45,15 @@ public class GameDetailActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.d(TAG,response.body().string());
+                mGame = GameService.processGame(response);
+                Log.d(TAG,mGame.getTitle());
+                Log.d(TAG,mGame.getUrl());
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }

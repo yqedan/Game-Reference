@@ -28,7 +28,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class GameSearchActivity extends AppCompatActivity { //implements AdapterView.OnItemClickListener {
+public class GameSearchActivity extends AppCompatActivity {
     public static final String TAG = GameSearchActivity.class.getSimpleName();
     @Bind(R.id.recyclerView) RecyclerView mRecyclerView;
     private GameListAdapter mAdapter;
