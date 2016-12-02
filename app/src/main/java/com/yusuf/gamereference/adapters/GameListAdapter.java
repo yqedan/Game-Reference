@@ -47,6 +47,7 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GameVi
 
     public class GameViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         @Bind(R.id.gameTitle) TextView mGameTitleTextView;
+        @Bind(R.id.gamePlatform) TextView mGamePlatformTextView;
         @Bind(R.id.gameTitleImageView) ImageView mGameTitleImageView;
 
         private Context mContext;
@@ -67,8 +68,9 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GameVi
         }
 
         public void bindGame(Game game){
-            Picasso.with(mContext).load(game.getImageUrl()).into(mGameTitleImageView);
+            Picasso.with(mContext).load(game.getImageUrl()).resize(200,200).centerInside().into(mGameTitleImageView);
             mGameTitleTextView.setText(game.getTitle());
+            mGamePlatformTextView.setText(game.getPlatform());
         }
     }
 

@@ -3,19 +3,30 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="140dp"
-            android:id="@+id/gameTitleImageView"
-            android:src="@drawable/gameimage"
-            >
 
-        </ImageView>
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/gameTitleImageView"
+        android:src="@drawable/gameimage" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
         <TextView
             android:text="The Legend Of Zelda"
             android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="90dp"
+            android:layout_height="wrap_content"
             android:id="@+id/gameTitle"
             android:textSize="20sp" />
+
+        <TextView
+            android:text="GameCube"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/gamePlatform"
+            android:textSize="20sp" />
+    </LinearLayout>
 </LinearLayout>
