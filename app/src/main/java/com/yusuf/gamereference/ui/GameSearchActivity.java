@@ -1,18 +1,9 @@
 package com.yusuf.gamereference.ui;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.yusuf.gamereference.R;
 import com.yusuf.gamereference.adapters.GameListAdapter;
@@ -29,10 +20,9 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class GameSearchActivity extends AppCompatActivity {
-    public static final String TAG = GameSearchActivity.class.getSimpleName();
     @Bind(R.id.recyclerView) RecyclerView mRecyclerView;
+    public static final String TAG = GameSearchActivity.class.getSimpleName();
     private GameListAdapter mAdapter;
-    @Bind(R.id.textView) TextView mTextView;
     public ArrayList<Game> mGames = new ArrayList<>();
 
     @Override
@@ -41,7 +31,7 @@ public class GameSearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_search);
         ButterKnife.bind(this);
         String search = getIntent().getStringExtra("search");
-        mTextView.setText("You searched for " + search);
+        setTitle(search);
         getGames(search);
     }
 
@@ -58,7 +48,7 @@ public class GameSearchActivity extends AppCompatActivity {
                 GameSearchActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mAdapter = new GameListAdapter(getApplicationContext(), mGames);
+                        mAdapter = new GameListAdapter(mGames);
                         mRecyclerView.setAdapter(mAdapter);
                         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(GameSearchActivity.this);
                         mRecyclerView.setLayoutManager(layoutManager);

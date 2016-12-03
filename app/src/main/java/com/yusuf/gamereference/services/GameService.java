@@ -79,8 +79,9 @@ public class GameService {
                 JSONObject gameJSON = new JSONObject(jsonData);
                 JSONObject resultJSON = gameJSON.getJSONObject("results");
                 String title = resultJSON.getString("name");
+                String imageUrl = resultJSON.getJSONObject("image").getString("super_url");
                 String url = resultJSON.getString("site_detail_url");
-                game = new GameDetail(title,url);
+                game = new GameDetail(title,url, imageUrl);
             }
         }catch (JSONException |IOException e){
             e.printStackTrace();

@@ -6,22 +6,9 @@
     android:layout_height="match_parent"
     tools:context="com.yusuf.gamereference.ui.GameSearchActivity">
 
-    <TextView
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="20dp"
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="Search Results:"
-        android:gravity="center"
-        android:layout_centerHorizontal="true"/>
-
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/textView"
         android:id="@+id/recyclerView"/>
 
 </RelativeLayout>

@@ -4,14 +4,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.yusuf.gamereference.R;
-import com.yusuf.gamereference.adapters.GameListAdapter;
 import com.yusuf.gamereference.models.GameDetail;
 import com.yusuf.gamereference.services.GameService;
 
@@ -26,6 +24,7 @@ import okhttp3.Response;
 public class GameDetailActivity extends AppCompatActivity implements View.OnClickListener{
     @Bind(R.id.textViewTitle) TextView mTextViewTitle;
     @Bind(R.id.textViewLink) TextView mTextViewLink;
+    @Bind(R.id.imageView3) ImageView mBoxArt;
     public static final String TAG = GameDetailActivity.class.getSimpleName();
     GameDetail mGame;
     @Override
@@ -53,6 +52,7 @@ public class GameDetailActivity extends AppCompatActivity implements View.OnClic
                     @Override
                     public void run() {
                         mTextViewTitle.setText(mGame.getTitle());
+                        Picasso.with(getApplicationContext()).load(mGame.getImageUrl()).resize(400,400).centerInside().into(mBoxArt);
                     }
                 });
             }
@@ -61,9 +61,6 @@ public class GameDetailActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        //Log.d(TAG,mGame.getUrl());
-        Intent webIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse(mGame.getUrl()));
-        startActivity(webIntent);
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mGame.getUrl())));
     }
 }
