@@ -1,17 +1,11 @@
 package com.yusuf.gamereference.ui;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.yusuf.gamereference.R;
@@ -31,6 +25,7 @@ import okhttp3.Response;
 public class GameSearchActivity extends AppCompatActivity {
     public static final String TAG = GameSearchActivity.class.getSimpleName();
     @Bind(R.id.recyclerView) RecyclerView mRecyclerView;
+    final LinearLayoutManager layoutManager = new LinearLayoutManager(GameSearchActivity.this);
     private GameListAdapter mAdapter;
     @Bind(R.id.textView) TextView mTextView;
     public ArrayList<Game> mGames = new ArrayList<>();
@@ -43,6 +38,26 @@ public class GameSearchActivity extends AppCompatActivity {
         String search = getIntent().getStringExtra("search");
         mTextView.setText("You searched for " + search);
         getGames(search);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    Log.d(TAG, "End is reached!");
+                    ArrayList <String> platforms = new ArrayList<>();
+                    platforms.add("N64");
+                    mGames.add(new Game("","I scrolled to the bottom!",platforms,0));
+                }
+            }
+            @Override
+            public void onScrollStateChanged (RecyclerView recyclerView, int newState){
+                mAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void getGames(String title){
@@ -60,7 +75,6 @@ public class GameSearchActivity extends AppCompatActivity {
                     public void run() {
                         mAdapter = new GameListAdapter(getApplicationContext(), mGames);
                         mRecyclerView.setAdapter(mAdapter);
-                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(GameSearchActivity.this);
                         mRecyclerView.setLayoutManager(layoutManager);
                         mRecyclerView.setHasFixedSize(true);
                     }
