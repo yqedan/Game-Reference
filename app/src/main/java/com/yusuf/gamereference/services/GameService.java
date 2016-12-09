@@ -82,8 +82,30 @@ public class GameService {
                 String title = resultJSON.getString("name");
                 String imageUrl = resultJSON.getJSONObject("image").getString("super_url");
                 String url = resultJSON.getString("site_detail_url");
-                game = new GameDetail(title,url, imageUrl, null, null, null, null);
-                //TODO: parse platforms, developers, publishers, similar games
+                JSONArray platformsJSON = resultJSON.getJSONArray("platforms");
+                ArrayList<String> platforms = new ArrayList<>();
+                for (int j = 0; j < platformsJSON.length(); j++) {
+                    platforms.add(platformsJSON.getJSONObject(j).getString("abbreviation"));
+                }
+                JSONArray developersJSON = resultJSON.getJSONArray("developers");
+                ArrayList<String> developers = new ArrayList<>();
+                for (int j = 0; j < developersJSON.length(); j++) {
+                    developers.add(developersJSON.getJSONObject(j).getString("name"));
+                }
+                JSONArray publishersJSON = resultJSON.getJSONArray("publishers");
+                ArrayList<String> publishers = new ArrayList<>();
+                for (int j = 0; j < publishersJSON.length(); j++) {
+                    publishers.add(publishersJSON.getJSONObject(j).getString("name"));
+                }
+                JSONArray similarGamesJSON = resultJSON.getJSONArray("similar_games");
+                ArrayList<Game> similarGames = new ArrayList<>();
+                for (int j = 0; j < similarGamesJSON.length(); j++) {
+                    JSONObject similarGame = similarGamesJSON.getJSONObject(j);
+                    String similarTitle = similarGame.getString("name");
+                    Integer similarId = similarGame.getInt("id");
+                    similarGames.add(new Game(similarTitle, null, null, similarId));
+                }
+                game = new GameDetail(title,url, imageUrl, platforms, developers, publishers, similarGames);
             }
         }catch (JSONException |IOException e){
             e.printStackTrace();
