@@ -1,7 +1,9 @@
 package com.yusuf.gamereference.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.yusuf.gamereference.Constants;
 import com.yusuf.gamereference.R;
 import com.yusuf.gamereference.adapters.GameListAdapter;
 import com.yusuf.gamereference.models.Game;
@@ -36,13 +39,19 @@ public class GameSearchActivity extends AppCompatActivity {
     private int pastVisibleItems, visibleItemCount, totalItemCount; //Used to determine if we are at the bottom of our current list
     private int previousTotal = 0;
     private static String search;
+    private SharedPreferences mSharedPreferences;
+    private String mRecentSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_search);
         ButterKnife.bind(this);
-        search = getIntent().getStringExtra("search");
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mRecentSearch = mSharedPreferences.getString(Constants.PREFERENCES_SEARCH_KEY, null);
+        if (mRecentSearch != null) {
+            search = mRecentSearch;
+        }
         setTitle(search);
         //TODO add loading progress dialog
         getGames(search);

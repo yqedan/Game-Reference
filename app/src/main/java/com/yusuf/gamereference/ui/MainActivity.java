@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = mSharedPreferences.edit();
 
-        Log.e(TAG, mSharedPreferences.getString(Constants.PREFERENCES_SEARCH_KEY, null));
         mAuth = FirebaseAuth.getInstance();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -80,12 +79,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         String search = mEditText.getText().toString();
         if (search.equals("")) {
-            Toast.makeText(this, "Please enter a game to begin search", Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(this, "Using shared preferences to search", Toast.LENGTH_SHORT).show();
+        }else{
+            addToSharedPreferences(search);
         }
-        addToSharedPreferences(search);
         Intent intent = new Intent(MainActivity.this, GameSearchActivity.class);
-        intent.putExtra("search",search);
         startActivity(intent);
     }
 
