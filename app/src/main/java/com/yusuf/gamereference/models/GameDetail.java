@@ -1,25 +1,54 @@
 package com.yusuf.gamereference.models;
 
-public class GameDetail {
-    private String mTitle;
-    private String mUrl;
-    private String mImageUrl;
+import java.util.ArrayList;
 
-    public GameDetail(String title, String url, String imageUrl){
-        this.mTitle = title;
-        this.mUrl = url;
-        this.mImageUrl = imageUrl;
+public class GameDetail {
+    private String title;
+    private String giantBombUrl;
+    private String imageUrl;
+    private ArrayList<String> platforms;
+    private ArrayList<String> developers;
+    private ArrayList<String> publishers;
+    private ArrayList<Game> similarGames;
+
+    public GameDetail(){}
+    public GameDetail(String title, String giantBombUrl, String imageUrl,
+                      ArrayList<String> platforms, ArrayList<String> developers,
+                      ArrayList<String> publishers, ArrayList<Game> similarGames) {
+        this.title = title;
+        this.giantBombUrl = giantBombUrl;
+        this.imageUrl = imageUrl;
+        this.platforms = platforms;
+        this.developers = developers;
+        this.publishers = publishers;
+        this.similarGames = similarGames;
     }
 
-    public String getUrl() {
-        return mUrl;
+    public String getGiantBombUrl() {
+        return giantBombUrl;
     }
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public String getImageUrl() {
-        return mImageUrl;
+        return imageUrl;
+    }
+
+    public ArrayList<String> getPlatforms() {
+        return platforms;
+    }
+
+    public ArrayList<String> getDevelopers() {
+        return developers;
+    }
+
+    public ArrayList<String> getPublishers() {
+        return publishers;
+    }
+
+    public ArrayList<Game> getSimilarGames() {
+        return similarGames;
     }
 }

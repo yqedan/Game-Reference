@@ -82,7 +82,8 @@ public class GameService {
                 String title = resultJSON.getString("name");
                 String imageUrl = resultJSON.getJSONObject("image").getString("super_url");
                 String url = resultJSON.getString("site_detail_url");
-                game = new GameDetail(title,url, imageUrl);
+                game = new GameDetail(title,url, imageUrl, null, null, null, null);
+                //TODO: parse platforms, developers, publishers, similar games
             }
         }catch (JSONException |IOException e){
             e.printStackTrace();

@@ -65,7 +65,7 @@ public class GameDetailActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mGame.getUrl())));
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mGame.getGiantBombUrl())));
     }
 
     @Override
