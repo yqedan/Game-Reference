@@ -24,44 +24,58 @@ import okhttp3.Response;
 
 public class GameSearchActivity extends AppCompatActivity {
     public static final String TAG = GameSearchActivity.class.getSimpleName();
+    @Bind(R.id.textView) TextView mTextView;
     @Bind(R.id.recyclerView) RecyclerView mRecyclerView;
     final LinearLayoutManager layoutManager = new LinearLayoutManager(GameSearchActivity.this);
     private GameListAdapter mAdapter;
-    @Bind(R.id.textView) TextView mTextView;
     public ArrayList<Game> mGames = new ArrayList<>();
+    private int numberOfPages; //TODO get page number from API to prevent the 1 extra not necessary call
+    private int page = 1;
+    private boolean loading = true;
+    private int pastVisibleItems, visibleItemCount, totalItemCount;
+    private int previousTotal = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_search);
         ButterKnife.bind(this);
-        String search = getIntent().getStringExtra("search");
+        final String search = getIntent().getStringExtra("search");
         mTextView.setText("You searched for " + search);
         getGames(search);
+
+        mAdapter = new GameListAdapter(getApplicationContext(), mGames);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                int visibleItemCount = layoutManager.getChildCount();
-                int totalItemCount = layoutManager.getItemCount();
-                int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
-                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    Log.d(TAG, "End is reached!");
-                    ArrayList <String> platforms = new ArrayList<>();
-                    platforms.add("N64");
-                    mGames.add(new Game("","I scrolled to the bottom!",platforms,0));
+                visibleItemCount = layoutManager.getChildCount();
+                totalItemCount = layoutManager.getItemCount();
+                pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+
+                if (loading) {
+                    if (totalItemCount > previousTotal) {
+                        loading = false;
+                        previousTotal = totalItemCount;
+                    }
                 }
-            }
-            @Override
-            public void onScrollStateChanged (RecyclerView recyclerView, int newState){
-                mAdapter.notifyDataSetChanged();
+
+                if ( !loading && (pastVisibleItems + visibleItemCount >= totalItemCount) ) {
+                    Log.d(TAG, "End is reached!");
+                    getGames(search);
+                    loading = true;
+                }
             }
         });
     }
 
     private void getGames(String title){
-        GameService.findGames(title, new Callback() {
+        GameService.findGames(title, page, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
@@ -69,17 +83,15 @@ public class GameSearchActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                mGames = GameService.processSearch(response);
+                mGames.addAll(GameService.processSearch(response));
                 GameSearchActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mAdapter = new GameListAdapter(getApplicationContext(), mGames);
-                        mRecyclerView.setAdapter(mAdapter);
-                        mRecyclerView.setLayoutManager(layoutManager);
-                        mRecyclerView.setHasFixedSize(true);
+                        mAdapter.notifyDataSetChanged();
                     }
                 });
             }
         });
+        page++;
     }
 }
