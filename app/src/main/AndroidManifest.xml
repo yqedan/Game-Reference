@@ -12,16 +12,14 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar">
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ui.GameSearchActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.GameDetailActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar" />
+            android:screenOrientation="portrait" />
         <activity android:name=".ui.CreateAccountActivity" />
         <activity android:name=".ui.LoginActivity">
             <intent-filter>

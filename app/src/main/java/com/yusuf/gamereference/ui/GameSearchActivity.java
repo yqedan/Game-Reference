@@ -1,12 +1,10 @@
 package com.yusuf.gamereference.ui;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.yusuf.gamereference.R;
 import com.yusuf.gamereference.adapters.GameListAdapter;
@@ -23,11 +21,11 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class GameSearchActivity extends AppCompatActivity {
-    public static final String TAG = GameSearchActivity.class.getSimpleName();
+    private static final String TAG = GameSearchActivity.class.getSimpleName();
     @Bind(R.id.recyclerView) RecyclerView mRecyclerView;
-    final LinearLayoutManager layoutManager = new LinearLayoutManager(GameSearchActivity.this);
+    private final LinearLayoutManager layoutManager = new LinearLayoutManager(GameSearchActivity.this);
     private GameListAdapter mAdapter;
-    public ArrayList<Game> mGames = new ArrayList<>();
+    private ArrayList<Game> mGames = new ArrayList<>();
     private int numberOfPages; //TODO get page number from API to prevent the 1 extra not necessary call
     private int page = 1;
     private boolean loading = true;
