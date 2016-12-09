@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.yusuf.gamereference">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -22,11 +22,12 @@
         </activity>
         <activity
             android:name=".ui.GameSearchActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.GameDetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar"/>
+            android:theme="@style/AppThemeNoActionBar" />
+        <activity android:name=".ui.CreateAccountActivity"></activity>
     </application>
 
 </manifest>

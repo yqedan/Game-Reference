@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "561963472954",
+    "firebase_url": "https://game-reference.firebaseio.com",
+    "project_id": "game-reference",
+    "storage_bucket": "game-reference.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561963472954:android:76e51ea02d6c5cea",
+        "android_client_info": {
+          "package_name": "com.yusuf.gamereference"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "561963472954-h7njjrkmiens9p7ritrj5jm8if29s40e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yusuf.gamereference",
+            "certificate_hash": "36C2CC3FEB7E57269CD373DEEEE65AE809EFD3C2"
+          }
+        },
+        {
+          "client_id": "561963472954-i107m1ugoid88lnij7137tef26bmpt5f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDX4xCR3AU28duZ8UytlZUml64UEABZPnI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "561963472954-i107m1ugoid88lnij7137tef26bmpt5f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
