@@ -33,15 +33,16 @@ public class GameSearchActivity extends AppCompatActivity {
     private int numberOfPages; //TODO get page number from API to prevent the 1 extra not necessary call
     private int page = 1;
     private boolean loading = true;
-    private int pastVisibleItems, visibleItemCount, totalItemCount;
+    private int pastVisibleItems, visibleItemCount, totalItemCount; //Used to determine if we are at the bottom of our current list
     private int previousTotal = 0;
+    private static String search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_search);
         ButterKnife.bind(this);
-        final String search = getIntent().getStringExtra("search");
+        search = getIntent().getStringExtra("search");
         setTitle(search);
         //TODO add loading progress dialog
         getGames(search);
@@ -79,7 +80,7 @@ public class GameSearchActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_logout,menu);
+        getMenuInflater().inflate(R.menu.menu_search_logout,menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -118,6 +119,7 @@ public class GameSearchActivity extends AppCompatActivity {
                     public void run() {
                         mAdapter.notifyDataSetChanged();
                         //TODO remove loading progress dialog
+                        //TODO if this is the first page and we get no results notify user of this
                     }
                 });
             }
