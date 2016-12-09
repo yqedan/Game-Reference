@@ -19,11 +19,12 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class GameService {
-    public static void findGames(String title, Callback callback){
+    public static void findGames(String title, int page, Callback callback){
         OkHttpClient client = new OkHttpClient.Builder().build();
         HttpUrl.Builder urlBuilder = HttpUrl.parse(Constants.GIANT_BOMB_SEARCH_BASE_URL).newBuilder();
         urlBuilder.addQueryParameter(Constants.API_KEY_QUERY_PARAMETER,Constants.API_KEY)
-                   .addQueryParameter(Constants.SEARCH_QUERY_PARAMETER,title);
+                .addQueryParameter(Constants.SEARCH_PAGE_QUERY_PARAMETER,page + "")
+                .addQueryParameter(Constants.SEARCH_QUERY_PARAMETER,title);
         String url = urlBuilder.build().toString();
 
         Request request = new Request.Builder().url(url).build();
