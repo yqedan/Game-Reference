@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +42,7 @@ public class GameSearchActivity extends AppCompatActivity {
     private int previousTotal = 0;
     private static String search;
     private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor mEditor;
     private String mRecentSearch;
 
     @Override
@@ -90,6 +93,32 @@ public class GameSearchActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search_logout,menu);
+        ButterKnife.bind(this);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mEditor = mSharedPreferences.edit();
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                addToSharedPreferences(query);
+                page = 1;
+                setTitle(query);
+                mGames.removeAll(mGames);
+                mAdapter.notifyDataSetChanged();
+                getGames(query);
+                search = query;
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -112,7 +141,12 @@ public class GameSearchActivity extends AppCompatActivity {
         finish();
     }
 
+    private void addToSharedPreferences(String search) {
+        mEditor.putString(Constants.PREFERENCES_SEARCH_KEY, search).apply();
+    }
+
     private void getGames(String title){
+        //TODO cache search
         GameService.findGames(title, page, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

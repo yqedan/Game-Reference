@@ -11,7 +11,6 @@
     tools:context="com.yusuf.gamereference.ui.GameDetailActivity">
 
     <TextView
-        android:text="Game Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textViewTitle"
@@ -30,7 +29,6 @@
     <ImageView
         android:layout_width="200dp"
         android:layout_height="200dp"
-        app:srcCompat="@drawable/gameimage"
         android:id="@+id/imageView3"
         android:layout_marginTop="20dp"
         android:layout_below="@+id/textViewTitle"

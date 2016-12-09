@@ -3,7 +3,6 @@ package com.yusuf.gamereference.ui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,8 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private SharedPreferences.Editor mEditor;
 
     @Bind(R.id.button) Button mButton;
-    @Bind(R.id.editText) EditText mEditText;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -39,9 +35,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mEditor = mSharedPreferences.edit();
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -77,12 +70,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        String search = mEditText.getText().toString();
-        if (search.equals("")) {
-            Toast.makeText(this, "Using shared preferences to search", Toast.LENGTH_SHORT).show();
-        }else{
-            addToSharedPreferences(search);
-        }
         Intent intent = new Intent(MainActivity.this, GameSearchActivity.class);
         startActivity(intent);
     }
