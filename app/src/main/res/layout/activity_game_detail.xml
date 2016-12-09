@@ -10,50 +10,69 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.yusuf.gamereference.ui.GameDetailActivity">
-
-    <TextView
-        android:layout_below="@id/imageView3"
-        android:text="Platforms: Wii"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gameDetailPlatforms"
-        android:layout_centerHorizontal="true" />
-    <TextView
-        android:layout_below="@id/gameDetailPlatforms"
-        android:text="Developers: Nintendo EAD"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gameDetailDevelopers"
-        android:layout_centerHorizontal="true" />
-    <TextView
-        android:layout_below="@id/gameDetailDevelopers"
-        android:text="Publishers: Nintendo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gameDetaiPublishers"
-        android:layout_centerHorizontal="true" />
-
-    <ListView
-        android:layout_below="@id/similarGames"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gameDetaiSimilarGames">
-    </ListView>
-
     <ImageView
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:id="@+id/imageView3"
+        android:id="@+id/gameDetailImage"
         android:src="@drawable/gameimage"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:text="Giant Bomb page!"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"/>
+    <LinearLayout
+        android:id="@+id/gameDetails"
+        android:layout_below="@id/gameDetailImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textViewLink"
-        android:layout_below="@+id/gameDetaiPublishers"
-        android:layout_centerHorizontal="true" />
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:text="Platforms: Wii"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/gameDetailPlatforms"
+                android:layout_centerHorizontal="true" />
+            <TextView
+                android:text="Developers: Nintendo EAD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/gameDetailDevelopers"
+                android:layout_centerHorizontal="true" />
+            <TextView
+                android:text="Publishers: Nintendo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/gameDetailPublishers"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:text="Giant Bomb page!"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewLink"
+                android:layout_below="@+id/gameDetailPublishers"
+                android:layout_centerHorizontal="true" />
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add to collection"
+                android:id="@+id/addToCollectionButton"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="17dp">
+            </Button>
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
     <TextView
         android:text="Similar Games:"
@@ -61,5 +80,16 @@
         android:layout_height="wrap_content"
         android:id="@+id/similarGames"
         android:textSize="20sp"
-        android:layout_below="@+id/textViewLink" />
+        android:layout_below="@+id/gameDetails"
+    layout_width="wrap_content"
+    layout_height="wrap_content" />
+
+    <ListView
+        android:layout_below="@id/similarGames"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/gameDetaiSimilarGames"
+    layout_width="wrap_content"
+    layout_height="wrap_content">
+    </ListView>
 </RelativeLayout>

@@ -2,13 +2,15 @@ package com.yusuf.gamereference.ui;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,10 +29,16 @@ import okhttp3.Response;
 
 public class GameDetailActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = GameDetailActivity.class.getSimpleName();
-    @Bind(R.id.textViewTitle) TextView mTextViewTitle;
     @Bind(R.id.textViewLink) TextView mTextViewLink;
-    @Bind(R.id.imageView3) ImageView mBoxArt;
+    @Bind(R.id.gameDetailImage) ImageView mBoxArt;
+    @Bind(R.id.gameDetailPlatforms) TextView mPlatforms;
+    @Bind(R.id.gameDetailPublishers) TextView mPublishers;
+    @Bind(R.id.gameDetailDevelopers) TextView mDevelopers;
+    @Bind(R.id.gameDetaiSimilarGames) ListView mSimilarGamesListView;
+    @Bind(R.id.addToCollectionButton) Button mAddToCollection;
+
     GameDetail mGame;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +63,7 @@ public class GameDetailActivity extends AppCompatActivity implements View.OnClic
                 GameDetailActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mTextViewTitle.setText(mGame.getTitle());
+                        setTitle(mGame.getTitle());
                         Picasso.with(getApplicationContext()).load(mGame.getImageUrl()).resize(400,400).centerInside().into(mBoxArt);
                     }
                 });
