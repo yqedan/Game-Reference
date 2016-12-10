@@ -2,6 +2,7 @@ package com.yusuf.gamereference.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,7 +26,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
 
-    @Bind(R.id.button) Button mButton;
+    @Bind(R.id.buttonSearch) Button mButtonSearch;
+    @Bind(R.id.buttonCollection) Button mButtonCollection;
+    @Bind(R.id.imageView) ImageView mImageLink;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -47,7 +51,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
 
-        mButton.setOnClickListener(this);
+        mButtonSearch.setOnClickListener(this);
+        mButtonCollection.setOnClickListener(this);
+        mImageLink.setOnClickListener(this);
     }
 
     @Override
@@ -69,8 +75,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(MainActivity.this, GameCollectionActivity.class);
-        startActivity(intent);
+        if (v == mButtonSearch)
+            startActivity(new Intent(MainActivity.this, GameSearchActivity.class));
+        if (v == mButtonCollection)
+            startActivity(new Intent(MainActivity.this, GameCollectionActivity.class));
+        if (v == mImageLink)
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.giantbomb.com")));
     }
 
     @Override
