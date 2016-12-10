@@ -82,25 +82,56 @@ public class GameService {
                 String title = resultJSON.getString("name");
                 String imageUrl = resultJSON.getJSONObject("image").getString("super_url");
                 String url = resultJSON.getString("site_detail_url");
-                JSONArray platformsJSON = resultJSON.getJSONArray("platforms");
+
+                JSONArray platformsJSON = null;
+                try{
+                    platformsJSON = resultJSON.getJSONArray("platforms");
+                }
+                catch(JSONException e){
+                    e.printStackTrace();
+                }
                 ArrayList<String> platforms = new ArrayList<>();
-                for (int j = 0; j < platformsJSON.length(); j++) {
-                    platforms.add(platformsJSON.getJSONObject(j).getString("abbreviation"));
+                if (platformsJSON != null) {
+                    for (int j = 0; j < platformsJSON.length(); j++) {
+                        platforms.add(platformsJSON.getJSONObject(j).getString("abbreviation"));
+                    }
                 }
-                JSONArray developersJSON = resultJSON.getJSONArray("developers");
+                else platforms.add("None Listed");
+
+                JSONArray developersJSON = null;
+                try{
+                    developersJSON = resultJSON.getJSONArray("developers");
+                }
+                catch(JSONException e){
+                    e.printStackTrace();
+                }
                 ArrayList<String> developers = new ArrayList<>();
-                for (int j = 0; j < developersJSON.length(); j++) {
-                    developers.add(developersJSON.getJSONObject(j).getString("name"));
+                if (developersJSON != null) {
+                    for (int j = 0; j < developersJSON.length(); j++) {
+                        developers.add(developersJSON.getJSONObject(j).getString("name"));
+                    }
                 }
-                JSONArray publishersJSON = resultJSON.getJSONArray("publishers");
+                else developers.add("None Listed");
+
+                JSONArray publishersJSON = null;
+                try{
+                    publishersJSON = resultJSON.getJSONArray("publishers");
+                }
+                catch(JSONException e){
+                    e.printStackTrace();
+                }
                 ArrayList<String> publishers = new ArrayList<>();
-                for (int j = 0; j < publishersJSON.length(); j++) {
-                    publishers.add(publishersJSON.getJSONObject(j).getString("name"));
+                if (publishersJSON != null) {
+                    for (int j = 0; j < publishersJSON.length(); j++) {
+                        publishers.add(publishersJSON.getJSONObject(j).getString("name"));
+                    }
                 }
+                else publishers.add("None Listed");
+
+
                 JSONArray similarGamesJSON = null;
                 try{
-                    similarGamesJSON = resultJSON.getJSONArray("similar_games");
-                }
+                    similarGamesJSON = resultJSON.getJSONArray("similar_games");}
                 catch(JSONException e){
                     e.printStackTrace();
                 }
@@ -113,9 +144,8 @@ public class GameService {
                         similarGames.add(new Game(similarTitle, null, null, similarId));
                     }
                 }
-                else{
-                    similarGames.add(new Game("No Games", null, null, -1));
-                }
+                else similarGames.add(new Game("No Games", null, null, -1));
+
                 game = new GameDetail(title,url, imageUrl, platforms, developers, publishers, similarGames);
             }
         }catch (JSONException |IOException e){
