@@ -129,7 +129,7 @@ public class GameDetailActivity extends AppCompatActivity
                             }
                             //TODO: add logic to tell user no similar games were found
                             similarGames = (ArrayList<Game>) mGame.getSimilarGames();
-                            similarTitles.removeAll(similarTitles);
+                            similarTitles.removeAll(similarTitles); //Just to be sure!
                             for (int i = 0; i < similarGames.size() ; i++) {
                                 similarTitles.add(similarGames.get(i).getTitle());
                             }
@@ -192,8 +192,9 @@ public class GameDetailActivity extends AppCompatActivity
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Integer gameId = similarGames.get(position).getId();
         if (gameId != -1) {
-            //one game was set to -1 for the message No Games when no similar games were listed
+            //one game was set to -1 for the message "No Games" when no similar games were found
             Intent intent = new Intent(GameDetailActivity.this, GameDetailActivity.class);
+            //TODO limit the amount times this can be done before we run out of memory!
             intent.putExtra("id",gameId.toString());
             startActivity(intent);
         }
