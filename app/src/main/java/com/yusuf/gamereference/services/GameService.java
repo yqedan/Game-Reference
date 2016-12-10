@@ -97,18 +97,31 @@ public class GameService {
                 for (int j = 0; j < publishersJSON.length(); j++) {
                     publishers.add(publishersJSON.getJSONObject(j).getString("name"));
                 }
-                JSONArray similarGamesJSON = resultJSON.getJSONArray("similar_games");
+                JSONArray similarGamesJSON = null;
+                try{
+                    similarGamesJSON = resultJSON.getJSONArray("similar_games");
+                }
+                catch(JSONException e){
+                    e.printStackTrace();
+                }
                 ArrayList<Game> similarGames = new ArrayList<>();
-                for (int j = 0; j < similarGamesJSON.length(); j++) {
-                    JSONObject similarGame = similarGamesJSON.getJSONObject(j);
-                    String similarTitle = similarGame.getString("name");
-                    Integer similarId = similarGame.getInt("id");
-                    similarGames.add(new Game(similarTitle, null, null, similarId));
+                if (similarGamesJSON != null) {
+                    for (int j = 0; j < similarGamesJSON.length(); j++) {
+                        JSONObject similarGame = similarGamesJSON.getJSONObject(j);
+                        String similarTitle = similarGame.getString("name");
+                        Integer similarId = similarGame.getInt("id");
+                        similarGames.add(new Game(similarTitle, null, null, similarId));
+                    }
+                }
+                else{
+                    similarGames.add(new Game("No Games", null, null, -1));
                 }
                 game = new GameDetail(title,url, imageUrl, platforms, developers, publishers, similarGames);
             }
         }catch (JSONException |IOException e){
             e.printStackTrace();
+        }finally {
+
         }
         return game;
     }

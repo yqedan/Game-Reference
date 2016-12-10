@@ -191,6 +191,9 @@ public class GameDetailActivity extends AppCompatActivity
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //Toast.makeText(this, similarGames.get(position).getId().toString(), Toast.LENGTH_SHORT).show();
-        getGameDetails(similarGames.get(position).getId().toString());
+        Integer gameId = similarGames.get(position).getId();
+        if (gameId != -1) {
+            getGameDetails(gameId.toString());
+        }
     }
 }
