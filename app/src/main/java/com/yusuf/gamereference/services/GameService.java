@@ -120,8 +120,6 @@ public class GameService {
             }
         }catch (JSONException |IOException e){
             e.printStackTrace();
-        }finally {
-
         }
         return game;
     }
