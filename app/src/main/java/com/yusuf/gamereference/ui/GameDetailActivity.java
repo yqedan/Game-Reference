@@ -28,6 +28,8 @@ import com.yusuf.gamereference.models.Game;
 import com.yusuf.gamereference.models.GameDetail;
 import com.yusuf.gamereference.services.GameService;
 
+import org.parceler.Parcels;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -57,9 +59,16 @@ public class GameDetailActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_detail);
         ButterKnife.bind(this);
+
         Intent intent = getIntent();
-        String gameId = intent.getStringExtra("id");
-        getGameDetails(gameId);
+        GameDetail game = Parcels.unwrap(intent.getParcelableExtra("game"));
+        if (game == null) {
+            String gameId = intent.getStringExtra("id");
+            getGameDetails(gameId);
+        }else{
+            mGame = game;
+            updateViews();
+        }
         mTextViewLink.setOnClickListener(this);
         mAddToCollection.setOnClickListener(this);
         mSimilarGamesListView.setOnItemClickListener(this);
@@ -79,69 +88,7 @@ public class GameDetailActivity extends AppCompatActivity
                     @Override
                     public void run() {
                         if (mGame != null) {
-                            setTitle(mGame.getTitle());
-                            Picasso.with(getApplicationContext()).load(mGame.getImageUrl()).resize(400,400).centerInside().into(mBoxArt);
-                            //TODO: dry this up below by using a method
-                            ArrayList<String> platforms = (ArrayList<String>) mGame.getPlatforms();
-                            String platform = "";
-                            for (int i = 0; i < platforms.size() ; i++) {
-                                if (i+1 == platforms.size())
-                                    platform += (platforms.get(i));
-                                else
-                                    platform += (platforms.get(i) + ", ");
-                            }
-                            if (platforms.size() == 0) {
-                                mPlatforms.setText("Platforms: (none)");
-                            }else if (platforms.size() == 1){
-                                mPlatforms.setText("Platform: " + platform);
-                            }else{
-                                mPlatforms.setText("Platforms: " + platform);
-                            }
-                            ArrayList<String> developers = (ArrayList<String>) mGame.getDevelopers();
-                            String developer = "";
-                            for (int i = 0; i < developers.size() ; i++) {
-                                if (i+1 == developers.size())
-                                    developer += (developers.get(i));
-                                else
-                                    developer += (developers.get(i) + ", ");
-                            }
-                            if (developers.size() == 0) {
-                                mDevelopers.setText("Developers: (none)");
-                            }else if (developers.size() == 1){
-                                mDevelopers.setText("Developer: " + developer);
-                            }else{
-                                mDevelopers.setText("Developers: " + developer);
-                            }
-                            ArrayList<String> publishers = (ArrayList<String>) mGame.getPublishers();
-                            String publisher = "";
-                            for (int i = 0; i < publishers.size() ; i++) {
-                                if (i+1 == publishers.size())
-                                    publisher += (publishers.get(i));
-                                else
-                                    publisher += (publishers.get(i) + ", ");
-                            }
-                            if (publishers.size() == 0) {
-                                mPublishers.setText("Publishers: (none)");
-                            }else if (publishers.size() == 1){
-                                mPublishers.setText("Publisher: " + publisher);
-                            }else{
-                                mPublishers.setText("Publishers: " + publisher);
-                            }
-                            //TODO: add logic to tell user no similar games were found
-                            similarGames = (ArrayList<Game>) mGame.getSimilarGames();
-                            similarTitles.removeAll(similarTitles); //Just to be sure!
-                            for (int i = 0; i < similarGames.size() ; i++) {
-                                similarTitles.add(similarGames.get(i).getTitle());
-                            }
-                            ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, similarTitles){
-                                @Override
-                                public View getView(int position, View convertView, ViewGroup parent) {
-                                    TextView textView = (TextView) super.getView(position, convertView, parent);
-                                    textView.setTextColor(Color.parseColor("#000000"));
-                                    return textView;
-                                }
-                            };
-                            mSimilarGamesListView.setAdapter(adapter);
+                            updateViews();
                         }
                     }
                 });
@@ -186,6 +133,72 @@ public class GameDetailActivity extends AppCompatActivity
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    private void updateViews(){
+        setTitle(mGame.getTitle());
+        Picasso.with(getApplicationContext()).load(mGame.getImageUrl()).resize(400,400).centerInside().into(mBoxArt);
+        //TODO: dry this up below by using a method
+        ArrayList<String> platforms = (ArrayList<String>) mGame.getPlatforms();
+        String platform = "";
+        for (int i = 0; i < platforms.size() ; i++) {
+            if (i+1 == platforms.size())
+                platform += (platforms.get(i));
+            else
+                platform += (platforms.get(i) + ", ");
+        }
+        if (platforms.size() == 0) {
+            mPlatforms.setText("Platforms: (none)");
+        }else if (platforms.size() == 1){
+            mPlatforms.setText("Platform: " + platform);
+        }else{
+            mPlatforms.setText("Platforms: " + platform);
+        }
+        ArrayList<String> developers = (ArrayList<String>) mGame.getDevelopers();
+        String developer = "";
+        for (int i = 0; i < developers.size() ; i++) {
+            if (i+1 == developers.size())
+                developer += (developers.get(i));
+            else
+                developer += (developers.get(i) + ", ");
+        }
+        if (developers.size() == 0) {
+            mDevelopers.setText("Developers: (none)");
+        }else if (developers.size() == 1){
+            mDevelopers.setText("Developer: " + developer);
+        }else{
+            mDevelopers.setText("Developers: " + developer);
+        }
+        ArrayList<String> publishers = (ArrayList<String>) mGame.getPublishers();
+        String publisher = "";
+        for (int i = 0; i < publishers.size() ; i++) {
+            if (i+1 == publishers.size())
+                publisher += (publishers.get(i));
+            else
+                publisher += (publishers.get(i) + ", ");
+        }
+        if (publishers.size() == 0) {
+            mPublishers.setText("Publishers: (none)");
+        }else if (publishers.size() == 1){
+            mPublishers.setText("Publisher: " + publisher);
+        }else{
+            mPublishers.setText("Publishers: " + publisher);
+        }
+        //TODO: add logic to tell user no similar games were found
+        similarGames = (ArrayList<Game>) mGame.getSimilarGames();
+        similarTitles.removeAll(similarTitles); //Just to be sure!
+        for (int i = 0; i < similarGames.size() ; i++) {
+            similarTitles.add(similarGames.get(i).getTitle());
+        }
+        ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, similarTitles){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView textView = (TextView) super.getView(position, convertView, parent);
+                textView.setTextColor(Color.parseColor("#000000"));
+                return textView;
+            }
+        };
+        mSimilarGamesListView.setAdapter(adapter);
     }
 
     @Override

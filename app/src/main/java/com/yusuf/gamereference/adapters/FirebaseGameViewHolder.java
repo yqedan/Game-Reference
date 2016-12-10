@@ -2,6 +2,7 @@ package com.yusuf.gamereference.adapters;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +17,10 @@ import com.squareup.picasso.Picasso;
 import com.yusuf.gamereference.Constants;
 import com.yusuf.gamereference.R;
 import com.yusuf.gamereference.models.Game;
+import com.yusuf.gamereference.models.GameDetail;
+import com.yusuf.gamereference.ui.GameDetailActivity;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -49,19 +54,18 @@ public class FirebaseGameViewHolder extends RecyclerView.ViewHolder implements V
 
     @Override
     public void onClick(View v) {
-        final ArrayList<Game> games = new ArrayList<>();
+        final ArrayList<GameDetail> games = new ArrayList<>();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHILD_GAMES);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    games.add(snapshot.getValue(Game.class));
+                    games.add(snapshot.getValue(GameDetail.class));
                 }
                 int itemPosition = getLayoutPosition();
-                //TODO: use parceler to pass entire object and not just the id
-//                Intent intent = new Intent(mContext, GameDetailActivity.class);
-//                intent.putExtra("id",games.get(itemPosition).getId().toString());
-//                mContext.startActivity(intent);
+                Intent intent = new Intent(mContext, GameDetailActivity.class);
+                intent.putExtra("game", Parcels.wrap(games.get(itemPosition)));
+                mContext.startActivity(intent);
             }
 
             @Override
@@ -69,6 +73,5 @@ public class FirebaseGameViewHolder extends RecyclerView.ViewHolder implements V
 
             }
         });
-
     }
 }

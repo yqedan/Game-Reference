@@ -1,8 +1,11 @@
 package com.yusuf.gamereference.models;
 
+import org.parceler.Parcel;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Parcel
 public class GameDetail {
     private String title;
     private String giantBombUrl;
@@ -13,6 +16,7 @@ public class GameDetail {
     private List<Game> similarGames;
 
     public GameDetail(){}
+
     public GameDetail(String title, String giantBombUrl, String imageUrl,
                       ArrayList<String> platforms, ArrayList<String> developers,
                       ArrayList<String> publishers, ArrayList<Game> similarGames) {

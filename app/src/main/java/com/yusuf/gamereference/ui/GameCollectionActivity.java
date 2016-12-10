@@ -28,6 +28,7 @@ public class GameCollectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_collection);
         ButterKnife.bind(this);
 
+        setTitle("My Collection");
         mGameReference = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHILD_GAMES);
         setUpFirebaseAdapter();
     }
@@ -38,8 +39,7 @@ public class GameCollectionActivity extends AppCompatActivity {
                         mGameReference) {
 
             @Override
-            protected void populateViewHolder(FirebaseGameViewHolder viewHolder,
-                                              Game model, int position) {
+            protected void populateViewHolder(FirebaseGameViewHolder viewHolder, Game model, int position) {
                 viewHolder.bindGame(model);
             }
         };
