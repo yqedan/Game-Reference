@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -16,10 +17,12 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 import com.yusuf.gamereference.R;
+import com.yusuf.gamereference.models.Game;
 import com.yusuf.gamereference.models.GameDetail;
 import com.yusuf.gamereference.services.GameService;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,6 +41,8 @@ public class GameDetailActivity extends AppCompatActivity implements View.OnClic
     @Bind(R.id.addToCollectionButton) Button mAddToCollection;
 
     GameDetail mGame;
+    private ArrayList<Game> similarGames;
+    private ArrayList<String> similarTitles = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +68,40 @@ public class GameDetailActivity extends AppCompatActivity implements View.OnClic
                 GameDetailActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setTitle(mGame.getTitle());
-                        Picasso.with(getApplicationContext()).load(mGame.getImageUrl()).resize(400,400).centerInside().into(mBoxArt);
+                        if (mGame != null) {
+                            setTitle(mGame.getTitle());
+                            Picasso.with(getApplicationContext()).load(mGame.getImageUrl()).resize(400,400).centerInside().into(mBoxArt);
+                            //TODO: dry this up below by using a method
+                            ArrayList<String> platforms = mGame.getPlatforms();
+                            String platform = "";
+                            for (int i = 0; i < platforms.size() ; i++) {
+                                platform += (platforms.get(i) + " ");
+                            }
+                            mPlatforms.setText("Platforms: " + platform);
+
+                            ArrayList<String> developers = mGame.getDevelopers();
+                            String developer = "";
+                            for (int i = 0; i < developers.size() ; i++) {
+                                developer += (developers.get(i) + " ");
+                            }
+                            mDevelopers.setText(developer);
+
+                            ArrayList<String> publishers = mGame.getPublishers();
+                            String publisher = "";
+                            for (int i = 0; i < publishers.size() ; i++) {
+                                publisher += (publishers.get(i) + " ");
+                            }
+                            mPublishers.setText(publisher);
+
+                            similarGames = mGame.getSimilarGames();
+
+                            for (int i = 0; i < similarGames.size() ; i++) {
+                                similarTitles.add(similarGames.get(i).getTitle());
+                            }
+
+                            ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, similarTitles);
+                            mSimilarGamesListView.setAdapter(adapter);
+                        }
                     }
                 });
             }
@@ -73,7 +110,9 @@ public class GameDetailActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mGame.getGiantBombUrl())));
+        if (v == mTextViewLink) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mGame.getGiantBombUrl())));
+        }
     }
 
     @Override
