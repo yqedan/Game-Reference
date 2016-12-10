@@ -1,15 +1,16 @@
 package com.yusuf.gamereference.models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GameDetail {
     private String title;
     private String giantBombUrl;
     private String imageUrl;
-    private ArrayList<String> platforms;
-    private ArrayList<String> developers;
-    private ArrayList<String> publishers;
-    private ArrayList<Game> similarGames;
+    private List<String> platforms;
+    private List<String> developers;
+    private List<String> publishers;
+    private List<Game> similarGames;
 
     public GameDetail(){}
     public GameDetail(String title, String giantBombUrl, String imageUrl,
@@ -36,19 +37,19 @@ public class GameDetail {
         return imageUrl;
     }
 
-    public ArrayList<String> getPlatforms() {
+    public List<String> getPlatforms() {
         return platforms;
     }
 
-    public ArrayList<String> getDevelopers() {
+    public List<String> getDevelopers() {
         return developers;
     }
 
-    public ArrayList<String> getPublishers() {
+    public List<String> getPublishers() {
         return publishers;
     }
 
-    public ArrayList<Game> getSimilarGames() {
+    public List<Game> getSimilarGames() {
         return similarGames;
     }
 }

@@ -8,4 +8,5 @@ public class Constants {
     public static final String SEARCH_PAGE_QUERY_PARAMETER = "page";
     public static final String GIANT_BOMB_GAME_DETAILS_BASE_URL = "http://www.giantbomb.com/api/game/?format=json";
     public static final String PREFERENCES_SEARCH_KEY = "search";
+    public static final String FIREBASE_CHILD_GAMES = "games";
 }

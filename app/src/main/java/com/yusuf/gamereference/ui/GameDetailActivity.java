@@ -13,9 +13,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
+import com.yusuf.gamereference.Constants;
 import com.yusuf.gamereference.R;
 import com.yusuf.gamereference.models.Game;
 import com.yusuf.gamereference.models.GameDetail;
@@ -53,6 +57,7 @@ public class GameDetailActivity extends AppCompatActivity implements View.OnClic
         String gameId = intent.getStringExtra("id");
         getGameDetails(gameId);
         mTextViewLink.setOnClickListener(this);
+        mAddToCollection.setOnClickListener(this);
     }
 
     private void getGameDetails(String id){
@@ -72,28 +77,28 @@ public class GameDetailActivity extends AppCompatActivity implements View.OnClic
                             setTitle(mGame.getTitle());
                             Picasso.with(getApplicationContext()).load(mGame.getImageUrl()).resize(400,400).centerInside().into(mBoxArt);
                             //TODO: dry this up below by using a method
-                            ArrayList<String> platforms = mGame.getPlatforms();
+                            ArrayList<String> platforms = (ArrayList<String>) mGame.getPlatforms();
                             String platform = "";
                             for (int i = 0; i < platforms.size() ; i++) {
                                 platform += (platforms.get(i) + " ");
                             }
                             mPlatforms.setText("Platforms: " + platform);
 
-                            ArrayList<String> developers = mGame.getDevelopers();
+                            ArrayList<String> developers = (ArrayList<String>) mGame.getDevelopers();
                             String developer = "";
                             for (int i = 0; i < developers.size() ; i++) {
                                 developer += (developers.get(i) + " ");
                             }
                             mDevelopers.setText(developer);
 
-                            ArrayList<String> publishers = mGame.getPublishers();
+                            ArrayList<String> publishers = (ArrayList<String>) mGame.getPublishers();
                             String publisher = "";
                             for (int i = 0; i < publishers.size() ; i++) {
                                 publisher += (publishers.get(i) + " ");
                             }
                             mPublishers.setText(publisher);
-
-                            similarGames = mGame.getSimilarGames();
+                            //TODO: add logic to tell user no similar games were found
+                            similarGames = (ArrayList<Game>) mGame.getSimilarGames();
 
                             for (int i = 0; i < similarGames.size() ; i++) {
                                 similarTitles.add(similarGames.get(i).getTitle());
@@ -112,6 +117,13 @@ public class GameDetailActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         if (v == mTextViewLink) {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mGame.getGiantBombUrl())));
+        }
+        if (v == mAddToCollection) {
+            DatabaseReference gameRef = FirebaseDatabase
+                    .getInstance()
+                    .getReference(Constants.FIREBASE_CHILD_GAMES);
+            gameRef.push().setValue(mGame);
+            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
         }
     }
 
