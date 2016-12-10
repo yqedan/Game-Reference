@@ -21,10 +21,8 @@ import butterknife.ButterKnife;
 
 public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.GameViewHolder>{
     private ArrayList<Game> mGames = new ArrayList<>();
-    private Context mContext;
 
-    public GameListAdapter(Context context, ArrayList<Game> games) {
-        mContext = context;
+    public GameListAdapter(ArrayList<Game> games) {
         mGames = games;
     }
 

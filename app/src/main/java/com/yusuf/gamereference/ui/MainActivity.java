@@ -13,7 +13,6 @@ import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.yusuf.gamereference.Constants;
 import com.yusuf.gamereference.R;
 
 import butterknife.Bind;
@@ -86,10 +85,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
-    }
-
-    private void addToSharedPreferences(String search) {
-        mEditor.putString(Constants.PREFERENCES_SEARCH_KEY, search).apply();
     }
 
     private void logout() {

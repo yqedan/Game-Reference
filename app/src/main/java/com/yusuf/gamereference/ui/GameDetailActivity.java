@@ -1,6 +1,7 @@
 package com.yusuf.gamereference.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -34,15 +37,16 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class GameDetailActivity extends AppCompatActivity implements View.OnClickListener{
+public class GameDetailActivity extends AppCompatActivity
+        implements View.OnClickListener, AdapterView.OnItemClickListener{
     private static final String TAG = GameDetailActivity.class.getSimpleName();
-    @Bind(R.id.textViewLink) TextView mTextViewLink;
     @Bind(R.id.gameDetailImage) ImageView mBoxArt;
     @Bind(R.id.gameDetailPlatforms) TextView mPlatforms;
     @Bind(R.id.gameDetailPublishers) TextView mPublishers;
     @Bind(R.id.gameDetailDevelopers) TextView mDevelopers;
     @Bind(R.id.gameDetaiSimilarGames) ListView mSimilarGamesListView;
     @Bind(R.id.addToCollectionButton) Button mAddToCollection;
+    @Bind(R.id.giantbombLink) Button mTextViewLink;
 
     GameDetail mGame;
     private ArrayList<Game> similarGames;
@@ -58,6 +62,7 @@ public class GameDetailActivity extends AppCompatActivity implements View.OnClic
         getGameDetails(gameId);
         mTextViewLink.setOnClickListener(this);
         mAddToCollection.setOnClickListener(this);
+        mSimilarGamesListView.setOnItemClickListener(this);
     }
 
     private void getGameDetails(String id){
@@ -80,31 +85,62 @@ public class GameDetailActivity extends AppCompatActivity implements View.OnClic
                             ArrayList<String> platforms = (ArrayList<String>) mGame.getPlatforms();
                             String platform = "";
                             for (int i = 0; i < platforms.size() ; i++) {
-                                platform += (platforms.get(i) + " ");
+                                if (i+1 == platforms.size())
+                                    platform += (platforms.get(i));
+                                else
+                                    platform += (platforms.get(i) + ", ");
                             }
-                            mPlatforms.setText("Platforms: " + platform);
-
+                            if (platforms.size() == 0) {
+                                mPlatforms.setText("Platforms: (none)");
+                            }else if (platforms.size() == 1){
+                                mPlatforms.setText("Platform: " + platform);
+                            }else{
+                                mPlatforms.setText("Platforms: " + platform);
+                            }
                             ArrayList<String> developers = (ArrayList<String>) mGame.getDevelopers();
                             String developer = "";
                             for (int i = 0; i < developers.size() ; i++) {
-                                developer += (developers.get(i) + " ");
+                                if (i+1 == developers.size())
+                                    developer += (developers.get(i));
+                                else
+                                    developer += (developers.get(i) + ", ");
                             }
-                            mDevelopers.setText(developer);
-
+                            if (developers.size() == 0) {
+                                mDevelopers.setText("Developers: (none)");
+                            }else if (developers.size() == 1){
+                                mDevelopers.setText("Developer: " + developer);
+                            }else{
+                                mDevelopers.setText("Developers: " + developer);
+                            }
                             ArrayList<String> publishers = (ArrayList<String>) mGame.getPublishers();
                             String publisher = "";
                             for (int i = 0; i < publishers.size() ; i++) {
-                                publisher += (publishers.get(i) + " ");
+                                if (i+1 == publishers.size())
+                                    publisher += (publishers.get(i));
+                                else
+                                    publisher += (publishers.get(i) + ", ");
                             }
-                            mPublishers.setText(publisher);
+                            if (publishers.size() == 0) {
+                                mPublishers.setText("Publishers: (none)");
+                            }else if (publishers.size() == 1){
+                                mPublishers.setText("Publisher: " + publisher);
+                            }else{
+                                mPublishers.setText("Publishers: " + publisher);
+                            }
                             //TODO: add logic to tell user no similar games were found
                             similarGames = (ArrayList<Game>) mGame.getSimilarGames();
-
+                            similarTitles.removeAll(similarTitles);
                             for (int i = 0; i < similarGames.size() ; i++) {
                                 similarTitles.add(similarGames.get(i).getTitle());
                             }
-
-                            ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, similarTitles);
+                            ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, similarTitles){
+                                @Override
+                                public View getView(int position, View convertView, ViewGroup parent) {
+                                    TextView textView = (TextView) super.getView(position, convertView, parent);
+                                    textView.setTextColor(Color.parseColor("#000000"));
+                                    return textView;
+                                }
+                            };
                             mSimilarGamesListView.setAdapter(adapter);
                         }
                     }
@@ -150,5 +186,11 @@ public class GameDetailActivity extends AppCompatActivity implements View.OnClic
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        //Toast.makeText(this, similarGames.get(position).getId().toString(), Toast.LENGTH_SHORT).show();
+        getGameDetails(similarGames.get(position).getId().toString());
     }
 }

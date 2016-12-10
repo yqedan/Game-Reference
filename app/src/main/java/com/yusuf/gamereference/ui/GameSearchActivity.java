@@ -59,7 +59,7 @@ public class GameSearchActivity extends AppCompatActivity {
         //TODO add loading progress dialog
         getGames(search);
 
-        mAdapter = new GameListAdapter(getApplicationContext(), mGames);
+        mAdapter = new GameListAdapter(mGames);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -99,7 +99,6 @@ public class GameSearchActivity extends AppCompatActivity {
         MenuItem menuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
             @Override
             public boolean onQueryTextSubmit(String query) {
                 addToSharedPreferences(query);
@@ -116,9 +115,7 @@ public class GameSearchActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
-
         });
-
         return super.onCreateOptionsMenu(menu);
     }
 
