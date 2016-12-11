@@ -93,6 +93,7 @@ public class GameService {
                 String title = resultJSON.getString("name");
                 String imageUrl = resultJSON.getJSONObject("image").getString("super_url");
                 String url = resultJSON.getString("site_detail_url");
+                Integer id = resultJSON.getInt("id");
 
                 JSONArray platformsJSON = null;
                 try{
@@ -157,7 +158,7 @@ public class GameService {
                 }
                 else similarGames.add(new Game("No Games", null, null, -1));
 
-                game = new GameDetail(title,url, imageUrl, platforms, developers, publishers, similarGames);
+                game = new GameDetail(title,url, imageUrl, platforms, developers, publishers, similarGames, id);
             }
         }catch (JSONException |IOException e){
             e.printStackTrace();

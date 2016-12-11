@@ -14,12 +14,15 @@ public class GameDetail {
     private List<String> developers;
     private List<String> publishers;
     private List<Game> similarGames;
+    private Integer id;
+    private String pushId;
 
     public GameDetail(){}
 
     public GameDetail(String title, String giantBombUrl, String imageUrl,
                       ArrayList<String> platforms, ArrayList<String> developers,
-                      ArrayList<String> publishers, ArrayList<Game> similarGames) {
+                      ArrayList<String> publishers, ArrayList<Game> similarGames,
+                      Integer id) {
         this.title = title;
         this.giantBombUrl = giantBombUrl;
         this.imageUrl = imageUrl;
@@ -27,6 +30,7 @@ public class GameDetail {
         this.developers = developers;
         this.publishers = publishers;
         this.similarGames = similarGames;
+        this.id = id;
     }
 
     public String getGiantBombUrl() {
@@ -55,5 +59,17 @@ public class GameDetail {
 
     public List<Game> getSimilarGames() {
         return similarGames;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getPushId() {
+        return pushId;
+    }
+
+    public void setPushId(String pushId) {
+        this.pushId = pushId;
     }
 }

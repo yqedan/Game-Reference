@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
@@ -102,10 +103,17 @@ public class GameDetailActivity extends AppCompatActivity
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mGame.getGiantBombUrl())));
         }
         if (v == mAddToCollection) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            String uid = user.getUid();
             DatabaseReference gameRef = FirebaseDatabase
                     .getInstance()
-                    .getReference(Constants.FIREBASE_CHILD_GAMES);
-            gameRef.push().setValue(mGame);
+                    .getReference(Constants.FIREBASE_CHILD_GAMES)
+                    .child(uid);
+
+            DatabaseReference pushRef = gameRef.push();
+            String pushId = pushRef.getKey();
+            mGame.setPushId(pushId);
+            pushRef.setValue(mGame);
             Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
         }
     }

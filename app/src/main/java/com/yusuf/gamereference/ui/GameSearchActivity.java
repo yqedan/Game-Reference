@@ -71,7 +71,6 @@ public class GameSearchActivity extends AppCompatActivity {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                Log.d(TAG, "Scrolled on page " + page);
                 visibleItemCount = layoutManager.getChildCount();
                 totalItemCount = layoutManager.getItemCount();
                 pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
@@ -162,7 +161,7 @@ public class GameSearchActivity extends AppCompatActivity {
             Toast.makeText(this, "No more results", Toast.LENGTH_SHORT).show();
             return;
         }
-        mLoadingProgressDialog.show(); //TODO fix issue where dialog box causes next page to not load if we reach the bottom of the list
+        mLoadingProgressDialog.show();
         GameService.findGames(title, page, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -172,7 +171,6 @@ public class GameSearchActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                //TODO detect if the are no results on first page search
                 final ArrayList<Game> temp = GameService.processSearch(response);
                 numberOfPages = GameService.getNumberOfPages();
                 GameSearchActivity.this.runOnUiThread(new Runnable() {
