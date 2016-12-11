@@ -184,7 +184,6 @@ public class GameDetailActivity extends AppCompatActivity
         }else{
             mPublishers.setText("Publishers: " + publisher);
         }
-        //TODO: add logic to tell user no similar games were found
         similarGames = (ArrayList<Game>) mGame.getSimilarGames();
         similarTitles.removeAll(similarTitles); //Just to be sure!
         for (int i = 0; i < similarGames.size() ; i++) {

@@ -19,6 +19,12 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class GameService {
+    private static int numberOfPages;
+
+    public static int getNumberOfPages() {
+        return numberOfPages;
+    }
+
     public static void findGames(String title, int page, Callback callback){
         OkHttpClient client = new OkHttpClient.Builder().build();
         HttpUrl.Builder urlBuilder = HttpUrl.parse(Constants.GIANT_BOMB_SEARCH_BASE_URL).newBuilder();
@@ -47,11 +53,16 @@ public class GameService {
     }
 
     public static ArrayList<Game> processSearch(Response response){
-        ArrayList <Game> games = new ArrayList<>();
+        ArrayList <Game> games = null;
         try{
             String jsonData = response.body().string();
             if (response.isSuccessful()) {
                 JSONObject gamesJSON = new JSONObject(jsonData);
+                int numberOfResults = gamesJSON.getInt("number_of_total_results");
+                numberOfPages = numberOfResults / 10;
+                if (numberOfResults % 10 > 0) numberOfPages++;
+                if (numberOfPages > 0) games = new ArrayList<>();
+                else return games;
                 JSONArray resultsJSON = gamesJSON.getJSONArray("results");
                 for (int i = 0; i <resultsJSON.length() ; i++) {
                     JSONObject game = resultsJSON.getJSONObject(i);

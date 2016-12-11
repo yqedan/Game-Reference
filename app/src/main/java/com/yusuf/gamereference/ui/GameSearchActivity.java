@@ -1,5 +1,6 @@
 package com.yusuf.gamereference.ui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.yusuf.gamereference.Constants;
@@ -35,7 +37,7 @@ public class GameSearchActivity extends AppCompatActivity {
     private final LinearLayoutManager layoutManager = new LinearLayoutManager(GameSearchActivity.this);
     private GameListAdapter mAdapter;
     private ArrayList<Game> mGames = new ArrayList<>();
-    private int numberOfPages; //TODO get page number from API to prevent the 1 extra not necessary call
+    private int numberOfPages = 1;
     private int page = 1;
     private boolean loading = true;
     private int pastVisibleItems, visibleItemCount, totalItemCount; //Used to determine if we are at the bottom of our current list
@@ -43,6 +45,7 @@ public class GameSearchActivity extends AppCompatActivity {
     private static String search;
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
+    private ProgressDialog mLoadingProgressDialog;
     private String mRecentSearch;
 
     @Override
@@ -55,8 +58,8 @@ public class GameSearchActivity extends AppCompatActivity {
         if (mRecentSearch != null) {
             search = mRecentSearch;
         }
+        createLoadingProgressDialog();
         setTitle(search);
-        //TODO add loading progress dialog
         getGames(search);
 
         mAdapter = new GameListAdapter(mGames);
@@ -68,7 +71,7 @@ public class GameSearchActivity extends AppCompatActivity {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
+                Log.d(TAG, "Scrolled on page " + page);
                 visibleItemCount = layoutManager.getChildCount();
                 totalItemCount = layoutManager.getItemCount();
                 pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
@@ -81,8 +84,7 @@ public class GameSearchActivity extends AppCompatActivity {
                 }
 
                 if ( !loading && (pastVisibleItems + visibleItemCount >= totalItemCount) ) {
-                    //TODO add loading progress dialog and prevent extraneous api call if there are no remaining pages
-                    Log.d(TAG, "End is reached!");
+                    Log.d(TAG, "End is reached! page " + page + " loading");
                     getGames(search);
                     loading = true;
                 }
@@ -101,12 +103,16 @@ public class GameSearchActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                //TODO: consider starting another instance of game search activity instead of resetting all these values
                 addToSharedPreferences(query);
                 page = 1;
                 setTitle(query);
                 mGames.removeAll(mGames);
+                numberOfPages = 1;
                 mAdapter.notifyDataSetChanged();
                 getGames(query);
+                loading = true;
+                previousTotal = 0;
                 search = query;
                 return false;
             }
@@ -142,28 +148,47 @@ public class GameSearchActivity extends AppCompatActivity {
         mEditor.putString(Constants.PREFERENCES_SEARCH_KEY, search).apply();
     }
 
+    private void createLoadingProgressDialog(){
+        mLoadingProgressDialog = new ProgressDialog(this);
+        //TODO: add logic for a custom message if this is loading the first page or subsequent pages
+        mLoadingProgressDialog.setTitle("Loading...");
+        mLoadingProgressDialog.setMessage("Searching for results");
+        mLoadingProgressDialog.setCancelable(false);
+    }
+
     private void getGames(String title){
         //TODO cache search
+        if (page > numberOfPages) {
+            Toast.makeText(this, "No more results", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mLoadingProgressDialog.show(); //TODO fix issue where dialog box causes next page to not load if we reach the bottom of the list
         GameService.findGames(title, page, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                mLoadingProgressDialog.dismiss();
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 //TODO detect if the are no results on first page search
-                mGames.addAll(GameService.processSearch(response));
+                final ArrayList<Game> temp = GameService.processSearch(response);
+                numberOfPages = GameService.getNumberOfPages();
                 GameSearchActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        if (temp == null) {
+                            Toast.makeText(GameSearchActivity.this, "No Results found", Toast.LENGTH_SHORT).show();
+                        }else{
+                            mGames.addAll(temp);
+                        }
                         mAdapter.notifyDataSetChanged();
-                        //TODO remove loading progress dialog
-                        //TODO if this is the first page and we get no results notify user of this
+                        mLoadingProgressDialog.dismiss();
+                        page++;
                     }
                 });
             }
         });
-        page++;
     }
 }

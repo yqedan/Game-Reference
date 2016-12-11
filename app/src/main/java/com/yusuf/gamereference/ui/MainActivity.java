@@ -1,7 +1,6 @@
 package com.yusuf.gamereference.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,9 +21,6 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = MainActivity.class.getSimpleName();
-
-    private SharedPreferences mSharedPreferences;
-    private SharedPreferences.Editor mEditor;
 
     @Bind(R.id.buttonSearch) Button mButtonSearch;
     @Bind(R.id.buttonCollection) Button mButtonCollection;
