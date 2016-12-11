@@ -20,8 +20,11 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.yusuf.gamereference.Constants;
 import com.yusuf.gamereference.R;
@@ -103,18 +106,40 @@ public class GameDetailActivity extends AppCompatActivity
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mGame.getGiantBombUrl())));
         }
         if (v == mAddToCollection) {
+
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             String uid = user.getUid();
-            DatabaseReference gameRef = FirebaseDatabase
+            final DatabaseReference gameRef = FirebaseDatabase
                     .getInstance()
                     .getReference(Constants.FIREBASE_CHILD_GAMES)
                     .child(uid);
 
-            DatabaseReference pushRef = gameRef.push();
-            String pushId = pushRef.getKey();
-            mGame.setPushId(pushId);
-            pushRef.setValue(mGame);
-            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+            gameRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    boolean match = false;
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        int currentId = snapshot.getValue(GameDetail.class).getId();
+                        if (currentId == mGame.getId()) {
+                            match = true;
+                            break;
+                        }
+                    }
+                    if (!match) {
+                        DatabaseReference pushRef = gameRef.push();
+                        String pushId = pushRef.getKey();
+                        mGame.setPushId(pushId);
+                        pushRef.setValue(mGame);
+                        Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
+                    }
+                    else Toast.makeText(getApplicationContext(), "You already have this game", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 
