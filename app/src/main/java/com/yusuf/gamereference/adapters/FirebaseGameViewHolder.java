@@ -2,9 +2,10 @@ package com.yusuf.gamereference.adapters;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,8 +33,6 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-import static android.content.ContentValues.TAG;
-
 public class FirebaseGameViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener{
     @Bind(R.id.gameTitle) TextView mGameTitleTextView;
     @Bind(R.id.gamePlatform) TextView mGamePlatformTextView;
@@ -47,6 +46,7 @@ public class FirebaseGameViewHolder extends RecyclerView.ViewHolder implements V
         super(itemView);
         ButterKnife.bind(this, itemView);
         mContext = itemView.getContext();
+
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         final DatabaseReference ref = FirebaseDatabase
                 .getInstance()
@@ -56,23 +56,7 @@ public class FirebaseGameViewHolder extends RecyclerView.ViewHolder implements V
         CustomGestureDetector customGestureDetectorListItem = new CustomGestureDetector(){
             @Override
             public boolean onDoubleTap(MotionEvent e){
-                final ArrayList<GameDetail> games = new ArrayList<>();
-                ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            games.add(snapshot.getValue(GameDetail.class));
-                        }
-                        int itemPosition = getLayoutPosition();
-                        ref.child(games.get(itemPosition).getPushId()).removeValue();
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-                Log.e(TAG, "Double Tap: ");
-                //TODO: Add code to delete item with confirm box
+                confirmDialog();
                 return true;
             }
             public boolean onSingleTapConfirmed(MotionEvent e){
@@ -121,5 +105,41 @@ public class FirebaseGameViewHolder extends RecyclerView.ViewHolder implements V
         return false;
     }
 
+    private void confirmDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
+        builder.setMessage("Are you sure you delete this game?");
+        builder.setPositiveButton("Yes",  new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                final DatabaseReference ref = FirebaseDatabase
+                        .getInstance()
+                        .getReference(Constants.FIREBASE_CHILD_GAMES)
+                        .child(uid);
+                final ArrayList<GameDetail> games = new ArrayList<>();
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            games.add(snapshot.getValue(GameDetail.class));
+                        }
+                        int itemPosition = getLayoutPosition();
+                        ref.child(games.get(itemPosition).getPushId()).removeValue();
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog,int id) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
 }
