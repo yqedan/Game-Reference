@@ -39,6 +39,7 @@ public class GameSearchActivity extends AppCompatActivity {
     private ArrayList<Game> mGames = new ArrayList<>();
     private int numberOfPages = 1;
     private int page = 1;
+    private int numberOfCurrentResults = 0;
     private boolean loading = true;
     private int pastVisibleItems, visibleItemCount, totalItemCount; //Used to determine if we are at the bottom of our current list
     private int previousTotal = 0;
@@ -75,15 +76,15 @@ public class GameSearchActivity extends AppCompatActivity {
                 totalItemCount = layoutManager.getItemCount();
                 pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
 
-                if (loading) {
+                if ( (loading && page > 2) || (loading && numberOfCurrentResults == 10) ){
                     if (totalItemCount > previousTotal) {
                         loading = false;
                         previousTotal = totalItemCount;
                     }
                 }
 
-                if ( !loading && (pastVisibleItems + visibleItemCount >= totalItemCount) ) {
-                    Log.d(TAG, "End is reached! page " + page + " loading");
+                if ( !loading && (pastVisibleItems + visibleItemCount >= totalItemCount) && numberOfCurrentResults == 10) {
+                    Log.e(TAG, "End is reached! page " + page + " loading");
                     getGames(search);
                     loading = true;
                 }
@@ -149,7 +150,6 @@ public class GameSearchActivity extends AppCompatActivity {
 
     private void createLoadingProgressDialog(){
         mLoadingProgressDialog = new ProgressDialog(this);
-        //TODO: add logic for a custom message if this is loading the first page or subsequent pages
         mLoadingProgressDialog.setTitle("Loading...");
         mLoadingProgressDialog.setMessage("Searching for results");
         mLoadingProgressDialog.setCancelable(false);
@@ -157,7 +157,7 @@ public class GameSearchActivity extends AppCompatActivity {
 
     private void getGames(String title){
         //TODO cache search
-        if (page > numberOfPages) {
+        if (page > numberOfPages && page != 2) {
             Toast.makeText(this, "No more results", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -172,6 +172,7 @@ public class GameSearchActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final ArrayList<Game> temp = GameService.processSearch(response);
+                numberOfCurrentResults = temp.size();
                 numberOfPages = GameService.getNumberOfPages();
                 GameSearchActivity.this.runOnUiThread(new Runnable() {
                     @Override
