@@ -4,6 +4,9 @@ package com.yusuf.gamereference.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +23,7 @@ import com.yusuf.gamereference.R;
 import com.yusuf.gamereference.models.Game;
 import com.yusuf.gamereference.models.GameDetail;
 import com.yusuf.gamereference.ui.GameDetailActivity;
+import com.yusuf.gamereference.util.CustomGestureDetector;
 
 import org.parceler.Parcels;
 
@@ -28,10 +32,14 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class FirebaseGameViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+import static android.content.ContentValues.TAG;
+
+public class FirebaseGameViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener{
     @Bind(R.id.gameTitle) TextView mGameTitleTextView;
     @Bind(R.id.gamePlatform) TextView mGamePlatformTextView;
     @Bind(R.id.gameTitleImageView) ImageView mGameTitleImageView;
+
+    private GestureDetector mGestureDetectorListItem;
 
     Context mContext;
 
@@ -39,7 +47,43 @@ public class FirebaseGameViewHolder extends RecyclerView.ViewHolder implements V
         super(itemView);
         ButterKnife.bind(this, itemView);
         mContext = itemView.getContext();
-        itemView.setOnClickListener(this);
+
+        CustomGestureDetector customGestureDetectorListItem = new CustomGestureDetector(){
+            @Override
+            public boolean onDoubleTap(MotionEvent e){
+                Log.e(TAG, "Double Tap: ");
+                //TODO: Add code to delete item with confirm box
+                return true;
+            }
+            public boolean onSingleTapConfirmed(MotionEvent e){
+                final ArrayList<GameDetail> games = new ArrayList<>();
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                DatabaseReference ref = FirebaseDatabase
+                        .getInstance()
+                        .getReference(Constants.FIREBASE_CHILD_GAMES)
+                        .child(uid);
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            games.add(snapshot.getValue(GameDetail.class));
+                        }
+                        int itemPosition = getLayoutPosition();
+                        Intent intent = new Intent(mContext, GameDetailActivity.class);
+                        intent.putExtra("game", Parcels.wrap(games.get(itemPosition)));
+                        mContext.startActivity(intent);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+                return true;
+            }
+        };
+        mGestureDetectorListItem = new GestureDetector(mContext, customGestureDetectorListItem);
+        itemView.setOnTouchListener(this);
     }
 
     public void bindGame(Game game){
@@ -54,29 +98,11 @@ public class FirebaseGameViewHolder extends RecyclerView.ViewHolder implements V
     }
 
     @Override
-    public void onClick(View v) {
-        final ArrayList<GameDetail> games = new ArrayList<>();
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference ref = FirebaseDatabase
-                .getInstance()
-                .getReference(Constants.FIREBASE_CHILD_GAMES)
-                .child(uid);
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    games.add(snapshot.getValue(GameDetail.class));
-                }
-                int itemPosition = getLayoutPosition();
-                Intent intent = new Intent(mContext, GameDetailActivity.class);
-                intent.putExtra("game", Parcels.wrap(games.get(itemPosition)));
-                mContext.startActivity(intent);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+    public boolean onTouch(View v, MotionEvent event) {
+        if (v == itemView) {
+            mGestureDetectorListItem.onTouchEvent(event);
+            return true;
+        }
+        return false;
     }
 }

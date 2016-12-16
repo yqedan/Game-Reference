@@ -37,12 +37,16 @@ public class GameSearchActivity extends AppCompatActivity {
     private final LinearLayoutManager layoutManager = new LinearLayoutManager(GameSearchActivity.this);
     private GameListAdapter mAdapter;
     private ArrayList<Game> mGames = new ArrayList<>();
+
+    //fields used for implementing an "infinite" scroll
     private int numberOfPages = 1;
     private int page = 1;
     private int numberOfCurrentResults = 0;
     private boolean loading = true;
     private int pastVisibleItems, visibleItemCount, totalItemCount; //Used to determine if we are at the bottom of our current list
     private int previousTotal = 0;
+
+    //fields used for searching and progress dialogs
     private static String search;
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
@@ -55,7 +59,7 @@ public class GameSearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_search);
         ButterKnife.bind(this);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mRecentSearch = null; //mSharedPreferences.getString(Constants.PREFERENCES_SEARCH_KEY, null);
+        mRecentSearch = mSharedPreferences.getString(Constants.PREFERENCES_SEARCH_KEY, null);
         if (mRecentSearch != null) {
             search = mRecentSearch;
         }
