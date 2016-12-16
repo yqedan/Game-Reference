@@ -83,10 +83,15 @@ public class GameSearchActivity extends AppCompatActivity {
                     }
                 }
 
-                if ( !loading && (pastVisibleItems + visibleItemCount >= totalItemCount) && numberOfCurrentResults == 10) {
-                    Log.d(TAG, "End is reached! page " + page + " loading");
-                    getGames(search);
-                    loading = true;
+                if ( !loading && (pastVisibleItems + visibleItemCount >= totalItemCount)) {
+                    if (numberOfCurrentResults == 10 && page <= numberOfPages) {
+                        Log.d(TAG, "End is reached! page " + page + " loading");
+                        getGames(search);
+                        loading = true;
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), "No more results", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -157,10 +162,6 @@ public class GameSearchActivity extends AppCompatActivity {
 
     private void getGames(String title){
         //TODO cache search
-        if (page > numberOfPages && page != 2) {
-            Toast.makeText(this, "No more results", Toast.LENGTH_SHORT).show();
-            return;
-        }
         mLoadingProgressDialog.show();
         GameService.findGames(title, page, new Callback() {
             @Override
