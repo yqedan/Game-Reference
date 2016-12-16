@@ -120,8 +120,7 @@ public class GameDetailActivity extends AppCompatActivity
                     .getInstance()
                     .getReference(Constants.FIREBASE_CHILD_GAMES)
                     .child(uid);
-
-            gameRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            ValueEventListener listener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     boolean match = false;
@@ -146,7 +145,9 @@ public class GameDetailActivity extends AppCompatActivity
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
-            });
+            };
+            gameRef.addListenerForSingleValueEvent(listener);
+            gameRef.removeEventListener(listener);
         }
     }
 
