@@ -1,14 +1,17 @@
 package com.yusuf.gamereference.ui;
 
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,8 +39,6 @@ import com.yusuf.gamereference.models.GameDetail;
 import com.yusuf.gamereference.services.GameService;
 import com.yusuf.gamereference.util.CustomGestureDetector;
 
-import org.parceler.Parcels;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -47,7 +48,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class GameDetailActivity extends AppCompatActivity
+public class GameDetailFragment extends Fragment
         implements View.OnClickListener,
         AdapterView.OnItemClickListener,
         View.OnTouchListener{
@@ -68,22 +69,35 @@ public class GameDetailActivity extends AppCompatActivity
 
     private GestureDetector mGestureDetectorImage;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game_detail);
-        ButterKnife.bind(this);
+    public GameDetailFragment() {
+        // Required empty public constructor
+    }
 
-        Intent intent = getIntent();
-        GameDetail game = Parcels.unwrap(intent.getParcelableExtra("game"));
-        if (game == null) {
-            String gameId = intent.getStringExtra("id");
-            createLoadingProgressDialog();
-            getGameDetails(gameId);
-        }else{
-            mGame = game;
-            updateViews();
-        }
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_game_detail, container, false);
+        ButterKnife.bind(this,view);
+
+//        Intent intent = getIntent();
+//        GameDetail game = Parcels.unwrap(intent.getParcelableExtra("game"));
+//        if (game == null) {
+//            String gameId = intent.getStringExtra("id");
+//            createLoadingProgressDialog();
+//            getGameDetails(gameId);
+//        }else{
+//            mGame = game;
+//            updateViews();
+//        }
         mTextViewLink.setOnClickListener(this);
         mAddToCollection.setOnClickListener(this);
         mSimilarGamesListView.setOnItemClickListener(this);
@@ -94,15 +108,16 @@ public class GameDetailActivity extends AppCompatActivity
                 addToCollection();
             }
         };
-        mGestureDetectorImage = new GestureDetector(this, customGestureDetectorImage);
+        mGestureDetectorImage = new GestureDetector(getActivity(), customGestureDetectorImage);
         mBoxArt.setOnTouchListener(this);
+
+        return view;
     }
 
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_logout,menu);
-        return super.onCreateOptionsMenu(menu);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_logout,menu);
     }
 
     @Override
@@ -114,14 +129,6 @@ public class GameDetailActivity extends AppCompatActivity
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void logout() {
-        FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(GameDetailActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
     }
 
     @Override
@@ -145,14 +152,7 @@ public class GameDetailActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Integer gameId = similarGames.get(position).getId();
-        if (gameId != -1) {
-            //one game was set to -1 for the message "No Games" when no similar games were found
-            Intent intent = new Intent(GameDetailActivity.this, GameDetailActivity.class);
-            //TODO limit the amount times this can be done before we run out of memory!
-            intent.putExtra("id",gameId.toString());
-            startActivity(intent);
-        }
+
     }
 
     private void getGameDetails(String id){
@@ -167,7 +167,7 @@ public class GameDetailActivity extends AppCompatActivity
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 mGame = GameService.processGame(response);
-                GameDetailActivity.this.runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mLoadingProgressDialog.dismiss();
@@ -181,8 +181,8 @@ public class GameDetailActivity extends AppCompatActivity
     }
 
     private void updateViews(){
-        setTitle(mGame.getTitle());
-        Picasso.with(getApplicationContext()).load(mGame.getImageUrl()).resize(400,400).centerInside().into(mBoxArt);
+        getActivity().setTitle(mGame.getTitle());
+        Picasso.with(getActivity()).load(mGame.getImageUrl()).resize(400,400).centerInside().into(mBoxArt);
         //TODO: dry this up below by using a method
         ArrayList<String> platforms = (ArrayList<String>) mGame.getPlatforms();
         String platform = "";
@@ -234,7 +234,7 @@ public class GameDetailActivity extends AppCompatActivity
         for (int i = 0; i < similarGames.size() ; i++) {
             similarTitles.add(similarGames.get(i).getTitle());
         }
-        ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1, similarTitles){
+        ArrayAdapter adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, similarTitles){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 TextView textView = (TextView) super.getView(position, convertView, parent);
@@ -245,8 +245,16 @@ public class GameDetailActivity extends AppCompatActivity
         mSimilarGamesListView.setAdapter(adapter);
     }
 
+    private void logout() {
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        //finish();
+    }
+
     private void createLoadingProgressDialog(){
-        mLoadingProgressDialog = new ProgressDialog(this);
+        mLoadingProgressDialog = new ProgressDialog(getActivity());
         mLoadingProgressDialog.setTitle("Loading...");
         mLoadingProgressDialog.setMessage("Fetching game details");
         mLoadingProgressDialog.setCancelable(false);
@@ -275,9 +283,9 @@ public class GameDetailActivity extends AppCompatActivity
                     String pushId = pushRef.getKey();
                     mGame.setPushId(pushId);
                     pushRef.setValue(mGame);
-                    Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Saved", Toast.LENGTH_SHORT).show();
                 }
-                else Toast.makeText(getApplicationContext(), "You already have this game", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(getActivity(), "You already have this game", Toast.LENGTH_SHORT).show();
             }
 
             @Override
