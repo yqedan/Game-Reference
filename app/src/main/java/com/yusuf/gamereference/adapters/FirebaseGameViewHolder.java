@@ -47,21 +47,36 @@ public class FirebaseGameViewHolder extends RecyclerView.ViewHolder implements V
         super(itemView);
         ButterKnife.bind(this, itemView);
         mContext = itemView.getContext();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final DatabaseReference ref = FirebaseDatabase
+                .getInstance()
+                .getReference(Constants.FIREBASE_CHILD_GAMES)
+                .child(uid);
 
         CustomGestureDetector customGestureDetectorListItem = new CustomGestureDetector(){
             @Override
             public boolean onDoubleTap(MotionEvent e){
+                final ArrayList<GameDetail> games = new ArrayList<>();
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            games.add(snapshot.getValue(GameDetail.class));
+                        }
+                        int itemPosition = getLayoutPosition();
+                        ref.child(games.get(itemPosition).getPushId()).removeValue();
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
                 Log.e(TAG, "Double Tap: ");
                 //TODO: Add code to delete item with confirm box
                 return true;
             }
             public boolean onSingleTapConfirmed(MotionEvent e){
                 final ArrayList<GameDetail> games = new ArrayList<>();
-                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DatabaseReference ref = FirebaseDatabase
-                        .getInstance()
-                        .getReference(Constants.FIREBASE_CHILD_GAMES)
-                        .child(uid);
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -105,4 +120,6 @@ public class FirebaseGameViewHolder extends RecyclerView.ViewHolder implements V
         }
         return false;
     }
+
+
 }
