@@ -156,6 +156,7 @@ public class GameService {
                         similarGames.add(new Game(similarTitle, null, null, similarId));
                     }
                 }
+                //TODO: implement the built in logic for a recycler view for when it is empty instead
                 else similarGames.add(new Game("No Games", null, null, -1));
 
                 game = new GameDetail(title,url, imageUrl, platforms, developers, publishers, similarGames, id);

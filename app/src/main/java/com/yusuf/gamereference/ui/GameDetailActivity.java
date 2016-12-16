@@ -1,5 +1,6 @@
 package com.yusuf.gamereference.ui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -58,6 +59,8 @@ public class GameDetailActivity extends AppCompatActivity
     private ArrayList<Game> similarGames;
     private ArrayList<String> similarTitles = new ArrayList<>();
 
+    private ProgressDialog mLoadingProgressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +71,7 @@ public class GameDetailActivity extends AppCompatActivity
         GameDetail game = Parcels.unwrap(intent.getParcelableExtra("game"));
         if (game == null) {
             String gameId = intent.getStringExtra("id");
+            createLoadingProgressDialog();
             getGameDetails(gameId);
         }else{
             mGame = game;
@@ -79,9 +83,11 @@ public class GameDetailActivity extends AppCompatActivity
     }
 
     private void getGameDetails(String id){
+        mLoadingProgressDialog.show();
         GameService.findGameDetails(id, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                mLoadingProgressDialog.dismiss();
                 e.printStackTrace();
             }
 
@@ -91,6 +97,7 @@ public class GameDetailActivity extends AppCompatActivity
                 GameDetailActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        mLoadingProgressDialog.dismiss();
                         if (mGame != null) {
                             updateViews();
                         }
@@ -243,5 +250,12 @@ public class GameDetailActivity extends AppCompatActivity
             intent.putExtra("id",gameId.toString());
             startActivity(intent);
         }
+    }
+
+    private void createLoadingProgressDialog(){
+        mLoadingProgressDialog = new ProgressDialog(this);
+        mLoadingProgressDialog.setTitle("Loading...");
+        mLoadingProgressDialog.setMessage("Fetching game details");
+        mLoadingProgressDialog.setCancelable(false);
     }
 }
