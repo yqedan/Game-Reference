@@ -17,8 +17,7 @@
             android:name=".ui.GameSearchActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.GameDetailActivity"
-            android:screenOrientation="portrait" />
+            android:name=".ui.GameDetailActivity" />
         <activity
             android:name=".ui.CreateAccountActivity"
             android:screenOrientation="portrait" />
