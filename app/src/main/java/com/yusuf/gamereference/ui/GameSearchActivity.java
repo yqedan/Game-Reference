@@ -55,7 +55,7 @@ public class GameSearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_search);
         ButterKnife.bind(this);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mRecentSearch = mSharedPreferences.getString(Constants.PREFERENCES_SEARCH_KEY, null);
+        mRecentSearch = null; //mSharedPreferences.getString(Constants.PREFERENCES_SEARCH_KEY, null);
         if (mRecentSearch != null) {
             search = mRecentSearch;
         }
@@ -84,7 +84,7 @@ public class GameSearchActivity extends AppCompatActivity {
                 }
 
                 if ( !loading && (pastVisibleItems + visibleItemCount >= totalItemCount) && numberOfCurrentResults == 10) {
-                    Log.e(TAG, "End is reached! page " + page + " loading");
+                    Log.d(TAG, "End is reached! page " + page + " loading");
                     getGames(search);
                     loading = true;
                 }
@@ -172,7 +172,11 @@ public class GameSearchActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final ArrayList<Game> temp = GameService.processSearch(response);
-                numberOfCurrentResults = temp.size();
+                if (temp == null) {
+                    numberOfCurrentResults = 0;
+                }else{
+                    numberOfCurrentResults = temp.size();
+                }
                 numberOfPages = GameService.getNumberOfPages();
                 GameSearchActivity.this.runOnUiThread(new Runnable() {
                     @Override

@@ -7,8 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -32,6 +34,7 @@ import com.yusuf.gamereference.R;
 import com.yusuf.gamereference.models.Game;
 import com.yusuf.gamereference.models.GameDetail;
 import com.yusuf.gamereference.services.GameService;
+import com.yusuf.gamereference.util.CustomGestureDetector;
 
 import org.parceler.Parcels;
 
@@ -45,7 +48,9 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class GameDetailActivity extends AppCompatActivity
-        implements View.OnClickListener, AdapterView.OnItemClickListener{
+        implements View.OnClickListener,
+        AdapterView.OnItemClickListener,
+        View.OnTouchListener{
     private static final String TAG = GameDetailActivity.class.getSimpleName();
     @Bind(R.id.gameDetailImage) ImageView mBoxArt;
     @Bind(R.id.gameDetailPlatforms) TextView mPlatforms;
@@ -60,6 +65,8 @@ public class GameDetailActivity extends AppCompatActivity
     private ArrayList<String> similarTitles = new ArrayList<>();
 
     private ProgressDialog mLoadingProgressDialog;
+
+    private GestureDetector mGestureDetectorImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +87,15 @@ public class GameDetailActivity extends AppCompatActivity
         mTextViewLink.setOnClickListener(this);
         mAddToCollection.setOnClickListener(this);
         mSimilarGamesListView.setOnItemClickListener(this);
+
+        CustomGestureDetector customGestureDetectorImage = new CustomGestureDetector(){
+            @Override
+            public void onLongPress(MotionEvent e){
+                addToCollection();
+            }
+        };
+        mGestureDetectorImage = new GestureDetector(this, customGestureDetectorImage);
+        mBoxArt.setOnTouchListener(this);
     }
 
     private void getGameDetails(String id){
@@ -113,41 +129,7 @@ public class GameDetailActivity extends AppCompatActivity
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mGame.getGiantBombUrl())));
         }
         if (v == mAddToCollection) {
-
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            String uid = user.getUid();
-            final DatabaseReference gameRef = FirebaseDatabase
-                    .getInstance()
-                    .getReference(Constants.FIREBASE_CHILD_GAMES)
-                    .child(uid);
-            ValueEventListener listener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    boolean match = false;
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        int currentId = snapshot.getValue(GameDetail.class).getId();
-                        if (currentId == mGame.getId()) {
-                            match = true;
-                            break;
-                        }
-                    }
-                    if (!match) {
-                        DatabaseReference pushRef = gameRef.push();
-                        String pushId = pushRef.getKey();
-                        mGame.setPushId(pushId);
-                        pushRef.setValue(mGame);
-                        Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
-                    }
-                    else Toast.makeText(getApplicationContext(), "You already have this game", Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            };
-            gameRef.addListenerForSingleValueEvent(listener);
-            gameRef.removeEventListener(listener);
+            addToCollection();
         }
     }
 
@@ -258,5 +240,51 @@ public class GameDetailActivity extends AppCompatActivity
         mLoadingProgressDialog.setTitle("Loading...");
         mLoadingProgressDialog.setMessage("Fetching game details");
         mLoadingProgressDialog.setCancelable(false);
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if(v == mBoxArt){
+            mGestureDetectorImage.onTouchEvent(event);
+            return true;
+        }
+        return false;
+    }
+
+    private void addToCollection(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+        final DatabaseReference gameRef = FirebaseDatabase
+                .getInstance()
+                .getReference(Constants.FIREBASE_CHILD_GAMES)
+                .child(uid);
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean match = false;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    int currentId = snapshot.getValue(GameDetail.class).getId();
+                    if (currentId == mGame.getId()) {
+                        match = true;
+                        break;
+                    }
+                }
+                if (!match) {
+                    DatabaseReference pushRef = gameRef.push();
+                    String pushId = pushRef.getKey();
+                    mGame.setPushId(pushId);
+                    pushRef.setValue(mGame);
+                    Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_SHORT).show();
+                }
+                else Toast.makeText(getApplicationContext(), "You already have this game", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        gameRef.addListenerForSingleValueEvent(listener);
+        gameRef.removeEventListener(listener);
     }
 }
