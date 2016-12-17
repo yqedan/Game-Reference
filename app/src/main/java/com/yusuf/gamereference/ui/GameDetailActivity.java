@@ -73,6 +73,8 @@ public class GameDetailActivity extends AppCompatActivity
 
     private DataFragment dataFragment;
 
+    private boolean owned = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +102,8 @@ public class GameDetailActivity extends AppCompatActivity
                 disableScreenOrientation();
                 getGameDetails(gameId);
             }else{
+                owned = true;
+                mAddToCollection.setText("Update Details");
                 mGame = game;
                 updateViews();
             }
@@ -163,7 +167,11 @@ public class GameDetailActivity extends AppCompatActivity
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mGame.getGiantBombUrl())));
         }
         if (v == mAddToCollection) {
-            addToCollection();
+            if(owned){
+                Log.d(TAG, "onClick: go here to edit details");
+            }else{
+                addToCollection();
+            }
         }
     }
 
@@ -304,6 +312,8 @@ public class GameDetailActivity extends AppCompatActivity
                     }
                 }
                 if (!match) {
+                    owned = true;
+                    mAddToCollection.setText("Update Details");
                     DatabaseReference pushRef = gameRef.push();
                     String pushId = pushRef.getKey();
                     mGame.setPushId(pushId);
