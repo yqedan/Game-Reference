@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,6 +47,7 @@ public class GameCollectionActivity extends AppCompatActivity {
                 .child(uid);
 
         setUpFirebaseAdapter();
+        Toast.makeText(GameCollectionActivity.this, "Double tap a game to delete it from your collection", Toast.LENGTH_LONG).show();
     }
 
     private void setUpFirebaseAdapter() {

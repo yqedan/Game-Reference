@@ -128,6 +128,7 @@ public class GameDetailActivity extends AppCompatActivity
         };
         mGestureDetectorImage = new GestureDetector(this, customGestureDetectorImage);
         mBoxArt.setOnTouchListener(this);
+        Toast.makeText(GameDetailActivity.this, "Long press the game icon to save to your collection or update details", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -315,7 +316,7 @@ public class GameDetailActivity extends AppCompatActivity
                         break;
                     }
                 }
-                //TODO update this so that when we create the activity we already know if the user already owns the game
+                //TODO update this so that when we create the activity or navigate back to it we already know if the user already owns the game
                 owned = true;
                 mAddToCollection.setText("Update Details");
                 if (!match) {
