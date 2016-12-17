@@ -87,8 +87,12 @@ public class GameDetailFragment extends Fragment
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        setRetainInstance(true);
     }
 
+    public void setData(GameDetail game){
+        mGame = game;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -164,7 +168,14 @@ public class GameDetailFragment extends Fragment
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        Integer gameId = similarGames.get(position).getId();
+        if (gameId != -1) {
+            //one game was set to -1 for the message "No Games" when no similar games were found
+            Intent intent = new Intent(getActivity(), GameDetailActivity.class);
+            //TODO limit the amount times this can be done before we run out of memory!
+            intent.putExtra("id", gameId.toString());
+            startActivity(intent);
+        }
     }
 
     private void getGameDetails(String id){

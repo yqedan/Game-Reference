@@ -30,28 +30,35 @@ public class GameDetailActivity extends AppCompatActivity {
 //
 //    private GestureDetector mGestureDetectorImage;
 
-    private static FragmentManager fragmentManager;
+    private GameDetailFragment gameDetailFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_detail);
 
-        fragmentManager = getSupportFragmentManager();//Get Fragment Manager
-
-//        ButterKnife.bind(this);
-
-        Intent intent = getIntent();
-        GameDetail game = Parcels.unwrap(intent.getParcelableExtra("game"));
-        String gameId = intent.getStringExtra("id");
-
-        Log.d(TAG, "onCreate from activity: " + gameId);
-
-        GameDetailFragment gameDetailFragment = GameDetailFragment.newInstance(game, gameId);
-
+        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragmentGameDetail, gameDetailFragment);
-        transaction.commit();
+
+        gameDetailFragment = (GameDetailFragment) fragmentManager.findFragmentByTag("data");
+
+        if(gameDetailFragment == null){
+            Intent intent = getIntent();
+            GameDetail game = Parcels.unwrap(intent.getParcelableExtra("game"));
+            String gameId = intent.getStringExtra("id");
+
+            Log.d(TAG, "onCreate from activity: " + gameId);
+
+            gameDetailFragment = GameDetailFragment.newInstance(game, gameId);
+
+            transaction.add(gameDetailFragment, "data");
+            transaction.replace(R.id.fragmentGameDetail, gameDetailFragment);
+            transaction.commit();
+        }else{
+            transaction.replace(R.id.fragmentGameDetail, gameDetailFragment);
+            transaction.commit();
+        }
     }
 
 
