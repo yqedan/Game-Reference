@@ -119,7 +119,11 @@ public class GameDetailActivity extends AppCompatActivity
         CustomGestureDetector customGestureDetectorImage = new CustomGestureDetector(){
             @Override
             public void onLongPress(MotionEvent e){
-                addToCollection();
+                if(owned){
+                    goToUpdateDetailActivity();
+                }else{
+                    addToCollection();
+                }
             }
         };
         mGestureDetectorImage = new GestureDetector(this, customGestureDetectorImage);
@@ -168,7 +172,7 @@ public class GameDetailActivity extends AppCompatActivity
         }
         if (v == mAddToCollection) {
             if(owned){
-                Log.d(TAG, "onClick: go here to edit details");
+                goToUpdateDetailActivity();
             }else{
                 addToCollection();
             }
@@ -311,9 +315,10 @@ public class GameDetailActivity extends AppCompatActivity
                         break;
                     }
                 }
+                //TODO update this so that when we create the activity we already know if the user already owns the game
+                owned = true;
+                mAddToCollection.setText("Update Details");
                 if (!match) {
-                    owned = true;
-                    mAddToCollection.setText("Update Details");
                     DatabaseReference pushRef = gameRef.push();
                     String pushId = pushRef.getKey();
                     mGame.setPushId(pushId);
@@ -339,5 +344,11 @@ public class GameDetailActivity extends AppCompatActivity
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         if (getWindowManager().getDefaultDisplay().getRotation()== Surface.ROTATION_270)
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+    }
+
+    private void goToUpdateDetailActivity(){
+        Intent intent = new Intent(GameDetailActivity.this, UpdateDetailActivity.class);
+        intent.putExtra("game", Parcels.wrap(mGame));
+        startActivity(intent);
     }
 }
