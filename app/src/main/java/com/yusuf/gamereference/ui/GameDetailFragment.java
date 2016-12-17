@@ -39,6 +39,8 @@ import com.yusuf.gamereference.models.GameDetail;
 import com.yusuf.gamereference.services.GameService;
 import com.yusuf.gamereference.util.CustomGestureDetector;
 
+import org.parceler.Parcels;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -69,14 +71,22 @@ public class GameDetailFragment extends Fragment
 
     private GestureDetector mGestureDetectorImage;
 
-    public GameDetailFragment() {
-        // Required empty public constructor
+    public static GameDetailFragment newInstance(GameDetail game, String gameId) {
+        GameDetailFragment gameDetailFragment = new GameDetailFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("game", Parcels.wrap(game));
+        args.putString("id", gameId);
+        gameDetailFragment.setArguments(args);
+        return gameDetailFragment;
     }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
+        createLoadingProgressDialog();
+        getGameDetails("11949");
         setHasOptionsMenu(true);
     }
 
@@ -84,16 +94,14 @@ public class GameDetailFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_game_detail, container, false);
         ButterKnife.bind(this,view);
 
-//        Intent intent = getIntent();
-//        GameDetail game = Parcels.unwrap(intent.getParcelableExtra("game"));
+//        GameDetail game = Parcels.unwrap(getArguments().getParcelable("game"));
+//        Log.d(TAG, "onCreateView: " + game.getTitle());
 //        if (game == null) {
-//            String gameId = intent.getStringExtra("id");
-//            createLoadingProgressDialog();
-//            getGameDetails(gameId);
+            //String gameId = getArguments().getString("id");
+
 //        }else{
 //            mGame = game;
 //            updateViews();
