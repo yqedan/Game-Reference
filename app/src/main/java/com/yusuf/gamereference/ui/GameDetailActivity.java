@@ -1,7 +1,9 @@
 package com.yusuf.gamereference.ui;
 
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -68,22 +71,43 @@ public class GameDetailActivity extends AppCompatActivity
 
     private GestureDetector mGestureDetectorImage;
 
+    private DataFragment dataFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_detail);
         ButterKnife.bind(this);
-
         Intent intent = getIntent();
-        GameDetail game = Parcels.unwrap(intent.getParcelableExtra("game"));
-        if (game == null) {
-            String gameId = intent.getStringExtra("id");
-            createLoadingProgressDialog();
-            getGameDetails(gameId);
+
+        // find the retained fragment on activity restarts
+        FragmentManager fm = getFragmentManager();
+        dataFragment = (DataFragment) fm.findFragmentByTag("data");
+
+        // create the fragment and data the first time
+        if (dataFragment == null) {
+            // add the fragment
+            dataFragment = new DataFragment();
+            fm.beginTransaction().add(dataFragment, "data").commit();
+            // load the data from the web
+
+            //dataFragment.setData();
+
+            GameDetail game = Parcels.unwrap(intent.getParcelableExtra("game"));
+            if (game == null) {
+                String gameId = intent.getStringExtra("id");
+                createLoadingProgressDialog();
+                disableScreenOrientation();
+                getGameDetails(gameId);
+            }else{
+                mGame = game;
+                updateViews();
+            }
         }else{
-            mGame = game;
+            mGame = dataFragment.getData();
             updateViews();
         }
+
         mTextViewLink.setOnClickListener(this);
         mAddToCollection.setOnClickListener(this);
         mSimilarGamesListView.setOnItemClickListener(this);
@@ -96,6 +120,14 @@ public class GameDetailActivity extends AppCompatActivity
         };
         mGestureDetectorImage = new GestureDetector(this, customGestureDetectorImage);
         mBoxArt.setOnTouchListener(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mGame != null) {
+            dataFragment.setData(mGame);
+        }
     }
 
     private void getGameDetails(String id){
@@ -114,6 +146,8 @@ public class GameDetailActivity extends AppCompatActivity
                     @Override
                     public void run() {
                         mLoadingProgressDialog.dismiss();
+                        //enable screen orientation
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                         if (mGame != null) {
                             updateViews();
                         }
@@ -286,5 +320,14 @@ public class GameDetailActivity extends AppCompatActivity
         };
         gameRef.addListenerForSingleValueEvent(listener);
         gameRef.removeEventListener(listener);
+    }
+
+    private void disableScreenOrientation(){
+        if (getWindowManager().getDefaultDisplay().getRotation()== Surface.ROTATION_0)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        if (getWindowManager().getDefaultDisplay().getRotation()== Surface.ROTATION_90)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        if (getWindowManager().getDefaultDisplay().getRotation()== Surface.ROTATION_270)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
     }
 }
