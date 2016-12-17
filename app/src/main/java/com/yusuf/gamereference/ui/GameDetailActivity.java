@@ -2,7 +2,10 @@ package com.yusuf.gamereference.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.yusuf.gamereference.R;
 import com.yusuf.gamereference.models.GameDetail;
@@ -10,7 +13,7 @@ import com.yusuf.gamereference.models.GameDetail;
 import org.parceler.Parcels;
 
 public class GameDetailActivity extends AppCompatActivity {
-//    private static final String TAG = GameDetailActivity.class.getSimpleName();
+    private static final String TAG = GameDetailActivity.class.getSimpleName();
 //    @Bind(R.id.gameDetailImage) ImageView mBoxArt;
 //    @Bind(R.id.gameDetailPlatforms) TextView mPlatforms;
 //    @Bind(R.id.gameDetailPublishers) TextView mPublishers;
@@ -27,17 +30,28 @@ public class GameDetailActivity extends AppCompatActivity {
 //
 //    private GestureDetector mGestureDetectorImage;
 
+    private static FragmentManager fragmentManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_detail);
+
+        fragmentManager = getSupportFragmentManager();//Get Fragment Manager
+
 //        ButterKnife.bind(this);
 
         Intent intent = getIntent();
         GameDetail game = Parcels.unwrap(intent.getParcelableExtra("game"));
         String gameId = intent.getStringExtra("id");
 
-        GameDetailFragment.newInstance(game, gameId);
+        Log.d(TAG, "onCreate from activity: " + gameId);
+
+        GameDetailFragment gameDetailFragment = GameDetailFragment.newInstance(game, gameId);
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragmentGameDetail, gameDetailFragment);
+        transaction.commit();
     }
 
 

@@ -63,7 +63,6 @@ public class GameDetailFragment extends Fragment
     @Bind(R.id.addToCollectionButton) Button mAddToCollection;
     @Bind(R.id.giantbombLink) Button mTextViewLink;
 
-    GameDetail mGame;
     private ArrayList<Game> similarGames;
     private ArrayList<String> similarTitles = new ArrayList<>();
 
@@ -71,12 +70,14 @@ public class GameDetailFragment extends Fragment
 
     private GestureDetector mGestureDetectorImage;
 
+    private GameDetail mGame;
+
     public static GameDetailFragment newInstance(GameDetail game, String gameId) {
         GameDetailFragment gameDetailFragment = new GameDetailFragment();
-        Bundle args = new Bundle();
-        args.putParcelable("game", Parcels.wrap(game));
-        args.putString("id", gameId);
-        gameDetailFragment.setArguments(args);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("game", Parcels.wrap(game));
+        bundle.putString("id", gameId);
+        gameDetailFragment.setArguments(bundle);
         return gameDetailFragment;
     }
 
@@ -85,8 +86,6 @@ public class GameDetailFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        createLoadingProgressDialog();
-        getGameDetails("11949");
         setHasOptionsMenu(true);
     }
 
@@ -96,16 +95,21 @@ public class GameDetailFragment extends Fragment
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_game_detail, container, false);
         ButterKnife.bind(this,view);
+        String gameId = null;
 
-//        GameDetail game = Parcels.unwrap(getArguments().getParcelable("game"));
-//        Log.d(TAG, "onCreateView: " + game.getTitle());
-//        if (game == null) {
-            //String gameId = getArguments().getString("id");
+        try{
+            gameId = getArguments().getString("id");
+            mGame = Parcels.unwrap(getArguments().getParcelable("game"));
+        }catch (NullPointerException e){}
+        if(mGame != null){
+            updateViews();
+        }else if(gameId != null){
+            createLoadingProgressDialog();
+            getGameDetails(gameId);
+        }else{
+            return view;
+        }
 
-//        }else{
-//            mGame = game;
-//            updateViews();
-//        }
         mTextViewLink.setOnClickListener(this);
         mAddToCollection.setOnClickListener(this);
         mSimilarGamesListView.setOnItemClickListener(this);
