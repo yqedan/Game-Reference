@@ -14,8 +14,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Coming Soon! Be able to update ownership and keep track of your collection and take pictures for your game."
+        android:gravity="center"
+        android:text="Coming Soon!\n\nBe able to update the status of game completion.\n\nKeep track of your collection!\n\nTake pictures of your game and take notes on condition."
         android:id="@+id/textView3"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>
